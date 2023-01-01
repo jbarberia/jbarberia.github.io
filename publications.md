@@ -1,6 +1,6 @@
 ---
 layout: page
-title "Publications"
+title: "Publications"
 ---
 
 # Benchmarking of open-source software for the optimal power flow problem

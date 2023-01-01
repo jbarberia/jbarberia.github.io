@@ -2,7 +2,6 @@
 layout: page
 title "Publications"
 ---
-# Publications
 
 ## Benchmarking of open-source software for the optimal power flow problem
 In this work, a comparative study was made of the different open-source alternatives that currently exist for the 

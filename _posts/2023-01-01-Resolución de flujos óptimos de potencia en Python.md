@@ -20,7 +20,7 @@ $$
 \min \sum_{i \in G}{c_ip^g_i}
 $$
 
-Donde $c_i$ es el costo de generación de la unidad $i$ y la cantidad de potencia despachada para esa unidad será $P^g_i$.
+Donde $$c_i$$ es el costo de generación de la unidad $$i$$ y la cantidad de potencia despachada para esa unidad será $$P^g_i$$.
 
 Tener solamente esta función objetivo sería tener una visión incompleta del problema ya que se debe tener en cuenta que la potencia generada deberá equiparar a la potencia que se demanda en ese instante de operación de la red. Esto hace a que el problema se convierta en una optimización con restricciones.
 
@@ -34,7 +34,9 @@ Aquí $p_i^d$ es la cantidad de potencia que se demanda en la barra $i$ y $p_{ij
 
 Para modelar estos intercambios de potencia entre barras se utilizara un modelo lineal denominado `DC-Power Flow`. El cual consiste en despreciar las perdidas en los circuitos y asumir que las magnitudes de tensiones entre el emisor y el receptor se mantienen constantes en 1 p.u.
 
-![Modelo de línea de transmisión](../assets/images/simple_transmission_line.png)
+<p align="center">
+  <img src="../assets/images/simple_transmission_line.png" />
+</p>
 
 $$
 p_{ij} = b_{ij}(\theta_i-\theta_j), \forall (i, j) \in E

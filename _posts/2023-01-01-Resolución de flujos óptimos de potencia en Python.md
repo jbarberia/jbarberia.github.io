@@ -30,7 +30,7 @@ $$
 p^g_i - p^d_i = \sum_{ij\in E_i}{p_{ij}}, \forall i \in N
 $$
 
-Aquí $p_i^d$ es la cantidad de potencia que se demanda en la barra $i$ y $p_{ij}$ representara los flujos de potencia que se intercambian con barras adyacentes a través de líneas de transmisión y transformadores.
+Aquí $$p_i^d$$ es la cantidad de potencia que se demanda en la barra $$i$$ y $$p_{ij}$$ representara los flujos de potencia que se intercambian con barras adyacentes a través de líneas de transmisión y transformadores.
 
 Para modelar estos intercambios de potencia entre barras se utilizara un modelo lineal denominado `DC-Power Flow`. El cual consiste en despreciar las perdidas en los circuitos y asumir que las magnitudes de tensiones entre el emisor y el receptor se mantienen constantes en 1 p.u.
 
@@ -42,7 +42,7 @@ $$
 p_{ij} = b_{ij}(\theta_i-\theta_j), \forall (i, j) \in E
 $$
 
-Aquí $b_{ij}$  es la susceptancia de la línea de transmisión (inversa de la reactancia) y los valores de $\theta$ representan los ángulos de las tensiones de las barras donde se halla conectada la línea.
+Aquí $$b_{ij}$$  es la susceptancia de la línea de transmisión (inversa de la reactancia) y los valores de $$\theta$$ representan los ángulos de las tensiones de las barras donde se halla conectada la línea.
 
 Si bien con las restricciones vistas uno modela físicamente la dinámica del sistema, es necesario tener en cuenta las restricciones operativas de los elementos involucrados.
 

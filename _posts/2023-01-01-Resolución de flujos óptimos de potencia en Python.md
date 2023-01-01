@@ -34,7 +34,7 @@ Aquí $p_i^d$ es la cantidad de potencia que se demanda en la barra $i$ y $p_{ij
 
 Para modelar estos intercambios de potencia entre barras se utilizara un modelo lineal denominado `DC-Power Flow`. El cual consiste en despreciar las perdidas en los circuitos y asumir que las magnitudes de tensiones entre el emisor y el receptor se mantienen constantes en 1 p.u.
 
-![Modelo de línea de transmisión](../asset/images/simple_transmission_line.png)
+![Modelo de línea de transmisión](../assets/images/simple_transmission_line.png)
 
 $$
 p_{ij} = b_{ij}(\theta_i-\theta_j), \forall (i, j) \in E

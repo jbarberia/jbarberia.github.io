@@ -1,3 +1,11 @@
+---
+title:  "Resolución de flujos óptimos de potencia en Python"
+mathjax: true
+layout: post
+categories: Power systems
+---
+
+
 # Resolución de flujos óptimos de potencia en Python
 
 En este artículo se mostrara como utilizar el uso de la programación orientada a objetos con el módulo `cvxpy`  para resolver el problema de flujo óptimo de potencia (OPF).
@@ -26,7 +34,7 @@ Aquí $p_i^d$ es la cantidad de potencia que se demanda en la barra $i$ y $p_{ij
 
 Para modelar estos intercambios de potencia entre barras se utilizara un modelo lineal denominado `DC-Power Flow`. El cual consiste en despreciar las perdidas en los circuitos y asumir que las magnitudes de tensiones entre el emisor y el receptor se mantienen constantes en 1 p.u.
 
-PONER IMAGEN DE LA LINEA
+![Modelo de línea de transmisión](../_asset/simple_transmission_line.png)
 
 $$
 p_{ij} = b_{ij}(\theta_i-\theta_j), \forall (i, j) \in E

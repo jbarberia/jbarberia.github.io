@@ -3,7 +3,7 @@ layout: page
 title "Publications"
 ---
 
-## Benchmarking of open-source software for the optimal power flow problem
+# Benchmarking of open-source software for the optimal power flow problem
 In this work, a comparative study was made of the different open-source alternatives that currently exist for the 
 modeling, simulation and optimization of electrical power systems. In this case, the PowerModels, Matpower and 
 PFNET libraries were evaluated, the three developed on different programming languages, on the PGLIB database.
@@ -19,7 +19,7 @@ baseline were analyzed.
 }
 ```
 
-## Computational Tool for Optimal Expansion of Transmission Networks
+# Computational Tool for Optimal Expansion of Transmission Networks
 This paper presents a software tool with a graphical user interface for transmission system expansion planning. Trough an integer-mixed optimization algorithm this tool selects the best combination of projects in all the given scenarios. In this model the load shed control policy to avoid overloads in the circuits is considered. Finally, a case study of the Argentinean interconnection system is presented to illustrate the use of the transmission planning software in real power system models.
 
 ```
@@ -33,7 +33,7 @@ This paper presents a software tool with a graphical user interface for transmis
 }
 ```
 
-## Application of entropic measures in the study of auditory evoked potentials for the detection of pathological patients
+# Application of entropic measures in the study of auditory evoked potentials for the detection of pathological patients
 The aim of the present work was to design an algorithm to increase the objectivity in differentiating the records of short-latency of auditory evoked potentials between subjects with normal hearing and those with pathologies in the auditory pathway. For this purpose, traditional permutation entropy, weighted permutation entropy and a modified version of the original permutation entropy published in the most recent literature were used to achieve this objective. 
 The choice of the most appropriate entropy was made based on the calculation of the specificity, sensibility, precision and area under the receiver operating characteristic (ROC) curve. The results obtained showed that for the differentiation of healthy and pathological records in the case of minors, the weighted permutation entropy was more appropriate and the modified version in the case of adults.
 
@@ -48,7 +48,7 @@ The choice of the most appropriate entropy was made based on the calculation of 
 }
 ```
 
-## Evaluation of the performance of permutation entropy variants for classifying auditory evoked potentials
+# Evaluation of the performance of permutation entropy variants for classifying auditory evoked potentials
 The aim of the present work was to investigate the performance of entropic tools to classify, subjects with normal hearing and those with pathologies in the auditory pathway, using short-latency records of auditory evoked potentials. To accomplish with this objective, traditional permutation entropy, weighted permutation entropy and a modified version of the original permutation entropy, correcting the count of the missing or forbidden patterns.
 
 The database used consisted of two age groups, one of minors aged from a few months to four years and the other of older aged over 18 years.

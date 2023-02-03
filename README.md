@@ -1,3 +1,4 @@
 # jbarberia.github.io
+[https://jbarberia.github.io/](https://jbarberia.github.io/)
 
-Personal webpage.
+Update the `docs/` folder entering in `src/` and running `make github`.

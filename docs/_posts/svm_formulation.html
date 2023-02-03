@@ -1,0 +1,447 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Mathematical Formulation of SVM &#8212; JLB  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Medición de descargas parciales con un osciloscopio [ES]" href="dp_osciloscopio.html" />
+    <link rel="prev" title="Posts" href="../posts.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="dp_osciloscopio.html" title="Medición de descargas parciales con un osciloscopio [ES]"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../posts.html" title="Posts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">JLB  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../posts.html" accesskey="U">Posts</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mathematical Formulation of SVM</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="mathematical-formulation-of-svm">
+<h1>Mathematical Formulation of SVM<a class="headerlink" href="#mathematical-formulation-of-svm" title="Permalink to this heading">¶</a></h1>
+<p>In this article we developed the mathematical formulation of the soft-margin variant of the classical maximum margin linear classifier.</p>
+<section id="how-we-compute-the-margin">
+<h2>How we compute the margin?<a class="headerlink" href="#how-we-compute-the-margin" title="Permalink to this heading">¶</a></h2>
+<p>The main idea of the algorithm is to choose a lineal margin to separate both classes. If we have the point <span class="math notranslate nohighlight">\(x_1\)</span> with <span class="math notranslate nohighlight">\(y_1 = 1\)</span> and <span class="math notranslate nohighlight">\(x_2\)</span> with <span class="math notranslate nohighlight">\(y_2 = -1\)</span> as the extreme points of the clusters.</p>
+<div class="math notranslate nohighlight">
+\[ w^t x_1 + b = 1 \]</div>
+<div class="math notranslate nohighlight">
+\[ w^t x_2 + b = -1 \]</div>
+<p>We can compute the margin as the difference between them as:</p>
+<div class="math notranslate nohighlight">
+\[ w^t (x_1 - x_2) = 2 \]</div>
+<p>If we normalize the left side, we get the size of the margin in the right hand side:</p>
+<div class="math notranslate nohighlight">
+\[ \frac{w^t (x1 - x2)}{||w||}  = \frac{2}{||w||} \]</div>
+<p>Finally the margin <span class="math notranslate nohighlight">\(\rho\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[ \rho = \frac{2}{||w||} \]</div>
+</section>
+<section id="optimization-model">
+<h2>Optimization model<a class="headerlink" href="#optimization-model" title="Permalink to this heading">¶</a></h2>
+<p>In order to maximize the margin <span class="math notranslate nohighlight">\(\rho\)</span> one can minimize the inverse of the margin <span class="math notranslate nohighlight">\(\frac{||w||}{2}\)</span>. To make the optimization problem more easy to solve we can get rid off the square root in the norm function and write:</p>
+<div class="math notranslate nohighlight">
+\[\min_{i, \zeta}{\frac{w^t w}{2} + C \sum_{i=1}^{n}{\zeta_i}}\]</div>
+<p>Subject to:</p>
+<div class="math notranslate nohighlight">
+\[ y_i(w^t x + b) \ge 1 - \zeta ,\quad i=1..n \]</div>
+<div class="math notranslate nohighlight">
+\[ \zeta_i \ge 0 ,\quad i=1..n \]</div>
+<p>Where the first constraint states that the training points needs to be assigned to the corresponding class. In this we allow some misclassification with a cost <span class="math notranslate nohighlight">\(C\)</span> trought the slacks variables <span class="math notranslate nohighlight">\(\zeta_i\)</span>.</p>
+</section>
+<section id="getting-the-optimum-of-the-problem">
+<h2>Getting the optimum of the problem<a class="headerlink" href="#getting-the-optimum-of-the-problem" title="Permalink to this heading">¶</a></h2>
+<p>To solve this problem we can compute the Lagragian function and solve the uncostrained equivalent:</p>
+<div class="math notranslate nohighlight">
+\[ \mathcal{L}(w, b, \zeta) = {\frac{w^t w}{2} + C \sum_{i=1}^{n}{\zeta_i}} +
+    \sum_{i=1}^{n}{\alpha_i (1 - \zeta - y_i(w^t x + b))} +
+    \sum_{i=1}^{n}{\beta_i(-\zeta_i)}
+\]</div>
+<blockquote>
+<div><p>Notice the minus sign in the terms corresponding to the constraints to match the cannonical form of an optimization problem:
+$<span class="math notranslate nohighlight">\( \min_{x} f(x)\)</span><span class="math notranslate nohighlight">\(
+\)</span><span class="math notranslate nohighlight">\( g(x) \le 0 \)</span>$</p>
+</div></blockquote>
+<p>The stationary point of the lagragian gives us the optimal of the problem. Taking the derivatives of the parameters and set it to zero:</p>
+<div class="math notranslate nohighlight">
+\[ \frac{\partial \mathcal{L}}{\partial w} = w - \sum_{i=1}^{n}{\alpha_i y_i x_i} = 0\]</div>
+<div class="math notranslate nohighlight">
+\[ \frac{\partial \mathcal{L}}{\partial b} = \sum_{i=1}^{n}{\alpha_i y_i} = 0\]</div>
+<div class="math notranslate nohighlight">
+\[ \frac{\partial \mathcal{L}}{\partial \zeta} = C - \alpha_i - \beta = 0, \quad i=1..n\]</div>
+<p>If we expand the Lagragian:</p>
+<div class="math notranslate nohighlight">
+\[ \mathcal{L}(w, b, \zeta) =
+    \frac{w^t w}{2}
+    + \sum_{i=1}^{n}{\alpha_i}
+    - \sum_{i=1}^{n}{\alpha_i y_i w^t x}
+    - \sum_{i=1}^{n}{\alpha_i y_i b}
+    + C \sum_{i=1}^{n}{\zeta_i}
+    - \sum_{i=1}^{n}{\alpha_i \zeta_i}
+    - \sum_{i=1}^{n}{\beta_i\zeta_i}
+\]</div>
+<p>And embed the stationary points of the Lagragian in the following way:</p>
+<div class="math notranslate nohighlight">
+\[ \mathcal{L}(w, b, \zeta) =
+    \frac{\sum_{i, j=1}^{n}{\alpha_i \alpha_j y_i y_j \langle x_i, x_j \rangle}}{2}
+    - \sum_{i=1}^{n}{\alpha_i \alpha_j y_i y_j \langle x_i, x_j \rangle}
+    + \sum_{i=1}^{n}{\alpha_i}
+    - \sum_{i=1}^{n}{\alpha_i y_i b}
+    + \sum_{i=1}^{n}{(C - \alpha - \beta)\zeta_i}
+\]</div>
+<ol class="arabic simple">
+<li><p>We replace <span class="math notranslate nohighlight">\(w\)</span> with the first expresion of the stationary point, <span class="math notranslate nohighlight">\(w = \sum_{i=1}^{n}{\alpha_i y_i x_i}\)</span>.</p></li>
+<li><p>We gonna remove the term <span class="math notranslate nohighlight">\(\sum_{i=1}^{n}{\alpha_i y_i}\)</span> because it sums zero.</p></li>
+<li><p>We gonna remove the last group because <span class="math notranslate nohighlight">\( C - \alpha_i - \beta_i = 0, \quad i=1..n \)</span>.</p></li>
+</ol>
+<p>Now the Lagragian has the following form:</p>
+<div class="math notranslate nohighlight">
+\[ \mathcal{L}(\alpha) =
+    \sum_{i=1}^{n}{\alpha_i}
+    -\frac{\sum_{i, j=1}^{n}{\alpha_i \alpha_j y_i y_j \langle x_i, x_j \rangle}}{2}
+\]</div>
+<p>If we put the constraints of the stationary point we get the dual problem:</p>
+<div class="math notranslate nohighlight">
+\[ \max {\mathcal{L}(\alpha)} \]</div>
+<p>Subject to
+$<span class="math notranslate nohighlight">\( \sum_{i=1}^{n}{\alpha_i y_i} = 0, \quad i=1..n\)</span><span class="math notranslate nohighlight">\(
+\)</span><span class="math notranslate nohighlight">\( 0 \le \alpha_i \le C, \quad i=1..n\)</span>$</p>
+<p>The first constraints corresponds to the <span class="math notranslate nohighlight">\(\frac{\partial \mathcal{L}}{\partial b} = 0\)</span> condition.</p>
+<p>The second one is a little bit more tricky but since <span class="math notranslate nohighlight">\(\alpha_i \ge 0\)</span> and <span class="math notranslate nohighlight">\(\beta_i \ge 0\)</span> we have with <span class="math notranslate nohighlight">\(\frac{\partial \mathcal{L}}{\partial \zeta}\)</span> an upper bound of <span class="math notranslate nohighlight">\(\alpha_i\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[ C - \alpha_i - \beta_i = 0 \]</div>
+<div class="math notranslate nohighlight">
+\[ \beta_i = 0 \implies \alpha_i = C\]</div>
+</section>
+<section id="how-we-classify">
+<h2>How we classify<a class="headerlink" href="#how-we-classify" title="Permalink to this heading">¶</a></h2>
+<p>Once we get the solution of the dual problem and the values of <span class="math notranslate nohighlight">\(\alpha^*\)</span> and <span class="math notranslate nohighlight">\(b^*\)</span> the decision boundary is given by:</p>
+<div class="math notranslate nohighlight">
+\[ d(x; \alpha^*, b^*) = sign(\sum_{sv}{\alpha_i^* y_i \langle x_i, x_j \rangle} + b*)\]</div>
+<p>Where <span class="math notranslate nohighlight">\(b^*\)</span> can be computed with the KKT conditions:</p>
+<div class="math notranslate nohighlight">
+\[ \alpha_i(y_i({w^*}^t x_i + b^*) - 1 - \zeta_i) = 0 \]</div>
+<div class="math notranslate nohighlight">
+\[ \beta_i^* \zeta_i^* = 0\]</div>
+<p>Now, the interesting part is thar the decision functions depends only on the support vectors (see the summation index). That is because <span class="math notranslate nohighlight">\(\alpha_i = 0\)</span> for any point where the margin constraint is not binding.</p>
+</section>
+<section id="id1">
+<h2>How we classify<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
+<p>Once we get the solution of the dual problem and the values of <span class="math notranslate nohighlight">\(\alpha^*\)</span> and <span class="math notranslate nohighlight">\(b^*\)</span> the decision boundary is given by:</p>
+<div class="math notranslate nohighlight">
+\[ d(x; \alpha^*, b^*) = sign(\sum_{sv}{\alpha_i^* y_i \langle x_i, x_j \rangle} + b*)\]</div>
+<p>Where <span class="math notranslate nohighlight">\(b^*\)</span> can be computed with the KKT conditions:</p>
+<div class="math notranslate nohighlight">
+\[ \alpha_i(y_i({w^*}^t x_i + b^*) - 1 - \zeta_i) = 0 \]</div>
+<div class="math notranslate nohighlight">
+\[ \beta_i^* \zeta_i^* = 0\]</div>
+<p>Now, the interesting part is thar the decision functions depends only on the support vectors (see the summation index). That is because <span class="math notranslate nohighlight">\(\alpha_i = 0\)</span> for any point where the margin constraint is not binding.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVC</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_blobs</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.inspection</span> <span class="kn">import</span> <span class="n">DecisionBoundaryDisplay</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_blobs</span><span class="p">(</span><span class="n">centers</span><span class="o">=</span><span class="p">[[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">]])</span>
+<span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">train_size</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;train accuracy:</span><span class="se">\t</span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_train</span><span class="p">))</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;test accuracy:</span><span class="se">\t</span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">))</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this case the dataset is linearly separable.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">train</span> <span class="n">accuracy</span><span class="p">:</span>	<span class="mf">100.00</span><span class="o">%</span>
+<span class="n">test</span> <span class="n">accuracy</span><span class="p">:</span>	<span class="mf">100.00</span><span class="o">%</span>
+</pre></div>
+</div>
+<p>Lets define a function to plot it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_svm</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+    <span class="c1"># Plot decision boundary</span>
+    <span class="n">xlim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_train</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_train</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">ylim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_train</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_train</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">DecisionBoundaryDisplay</span><span class="o">.</span><span class="n">from_estimator</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x_train</span><span class="p">,</span> <span class="n">response_method</span><span class="o">=</span><span class="s2">&quot;predict&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+
+    <span class="c1"># Plot training data</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">0</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x_train</span><span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">0</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;train - 0&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">1</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x_train</span><span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">1</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;train - 1&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Plot support vectors</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">support_</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x_train</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">support_</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Support Vectors&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Plot decision boundary</span>
+    <span class="n">w1</span><span class="p">,</span> <span class="n">w2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">intercept_</span>
+    <span class="n">margin</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">coef_</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="n">xlim</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">w1</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="n">w2</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;dashed&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Plot margin upper</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="n">xlim</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">w1</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="n">w2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">w1</span><span class="o">/</span><span class="n">w2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">margin</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;dashed&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;margin&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Plot margin lower</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="n">xlim</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">w1</span> <span class="o">*</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="n">w2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">w1</span><span class="o">/</span><span class="n">w2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">margin</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;dashed&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;x1&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;x2&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">xlim</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">plot_svm</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="" src="../_images/svm_1.bmp" /></p>
+<p>We can see only a few support vectors in comparision with the dataset size. Since the classes are linearly separable there is no training point inside the margin.</p>
+<p>If we have a non linearly separable dataset. We need to pay the price <span class="math notranslate nohighlight">\(C \sum_{i=1}^{n}\zeta_i\)</span> for misclassification. In the examples below we increase the value of <span class="math notranslate nohighlight">\(C\)</span> and see how the margin is reduced.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_blobs</span><span class="p">(</span><span class="n">centers</span><span class="o">=</span><span class="p">[[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">]])</span>
+<span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">train_size</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+<span class="n">C</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;train accuracy:</span><span class="se">\t</span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_train</span><span class="p">))</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;test accuracy:</span><span class="se">\t</span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">))</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">plot_svm</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SVM with C=</span><span class="si">{</span><span class="n">C</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">train</span> <span class="n">accuracy</span><span class="p">:</span>	<span class="mf">92.86</span><span class="o">%</span>
+<span class="n">test</span> <span class="n">accuracy</span><span class="p">:</span>	<span class="mf">100.00</span><span class="o">%</span>
+</pre></div>
+</div>
+<p><img alt="" src="../_images/svm_2.bmp" />
+<img alt="" src="../_images/svm_3.bmp" /></p>
+</section>
+<section id="non-linear-separable-data">
+<h2>Non linear separable data<a class="headerlink" href="#non-linear-separable-data" title="Permalink to this heading">¶</a></h2>
+<p>There are some cases where data is non linear separable like the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_circles</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_circles</span><span class="p">([</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="n">factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">train_size</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+<span class="n">C</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;train accuracy:</span><span class="se">\t</span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_train</span><span class="p">))</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;test accuracy:</span><span class="se">\t</span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">))</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">plot_svm</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="" src="../_images/svm_4.bmp" /></p>
+<p>To avoid this wew can use the Kernel-Trick. When the basic idea is to use a function <span class="math notranslate nohighlight">\(\phi\)</span> that maps the pairs <span class="math notranslate nohighlight">\([x_i, x_j]^t\)</span> and returns a higher dimension data. for example <span class="math notranslate nohighlight">\([x_i, x_j, x_i^2 + x_j^2]^t\)</span>.</p>
+<p>Now the decision boundary changes to:</p>
+<div class="math notranslate nohighlight">
+\[ d(x; \alpha^*, b^*) = sign(\sum_{sv}{\alpha_i^* y_i \langle \phi(x_i), \phi(x_j) \rangle} + b*)\]</div>
+<p>The function that can do this mapping, is one that fullfil the conditions of the Mercer theorem. The mercer theorem states that the kernel matrix needs to be symmetric in <span class="math notranslate nohighlight">\(\mathcal{X}\times\mathcal{X} \in \mathcal{R}\)</span>.</p>
+<p>The objective of the dual to determine the <span class="math notranslate nohighlight">\(\alpha_i\)</span> becomes:</p>
+<div class="math notranslate nohighlight">
+\[ \mathcal{L}(\alpha) = 
+    \sum_{i=1}^{n}{\alpha_i}
+    -\frac{\sum_{i, j=1}^{n}{\alpha_i \alpha_j y_i y_j \langle \phi(x_i), \phi(x_j) \rangle}}{2}
+\]</div>
+<p>This is interesting because we dont need to compute a function <span class="math notranslate nohighlight">\(\phi(x)\)</span> since we only need the correspoding entry from the gram matrix <span class="math notranslate nohighlight">\(G_{ij} = \langle \phi(x_i), \phi(x_j) \rangle\)</span>.</p>
+<section id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h3>
+<p>In the following example we gonna choose the following kernel:</p>
+<div class="math notranslate nohighlight">
+\[\phi(x, y) = \exp(-\gamma ||x-y||^2) \]</div>
+<p>This is called radial basis function (<code class="docutils literal notranslate"><span class="pre">rbf</span></code>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">gammas</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">gamma</span> <span class="ow">in</span> <span class="n">gammas</span><span class="p">:</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">gamma</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;gamma = </span><span class="si">{</span><span class="n">gamma</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;RBF kernel&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="" src="../_images/svm_5.bmp" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_circles</span><span class="p">([</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="n">factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">train_size</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+<span class="n">C</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;rbf&quot;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;train accuracy:</span><span class="se">\t</span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_train</span><span class="p">))</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;test accuracy:</span><span class="se">\t</span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">))</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot decision boundary</span>
+<span class="n">DecisionBoundaryDisplay</span><span class="o">.</span><span class="n">from_estimator</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x_train</span><span class="p">,</span> <span class="n">response_method</span><span class="o">=</span><span class="s2">&quot;predict&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+
+<span class="c1"># Plot training data</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">0</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x_train</span><span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">0</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;train - 0&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">1</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x_train</span><span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">1</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;train - 1&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot support vectors</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">support_</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x_train</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">support_</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Support Vectors&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="" src="../_images/svm_6.bmp" /></p>
+<p>If we increase <span class="math notranslate nohighlight">\(\gamma\)</span> we gonna have a more sharp decision boundary between the support vectors. We gonna see a decision boundary like a doughnut.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">C</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;rbf&quot;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;train accuracy:</span><span class="se">\t</span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_train</span><span class="p">))</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;test accuracy:</span><span class="se">\t</span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">))</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot decision boundary</span>
+<span class="n">DecisionBoundaryDisplay</span><span class="o">.</span><span class="n">from_estimator</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x_train</span><span class="p">,</span> <span class="n">response_method</span><span class="o">=</span><span class="s2">&quot;predict&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+
+<span class="c1"># Plot training data</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">0</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x_train</span><span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">0</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;train - 0&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">1</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x_train</span><span class="p">[</span><span class="n">y_train</span><span class="o">==</span><span class="mi">1</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;train - 1&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot support vectors</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_train</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">support_</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x_train</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">support_</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Support Vectors&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="" src="../_images/svm_7.bmp" /></p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Mathematical Formulation of SVM</a><ul>
+<li><a class="reference internal" href="#how-we-compute-the-margin">How we compute the margin?</a></li>
+<li><a class="reference internal" href="#optimization-model">Optimization model</a></li>
+<li><a class="reference internal" href="#getting-the-optimum-of-the-problem">Getting the optimum of the problem</a></li>
+<li><a class="reference internal" href="#how-we-classify">How we classify</a></li>
+<li><a class="reference internal" href="#id1">How we classify</a></li>
+<li><a class="reference internal" href="#non-linear-separable-data">Non linear separable data</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../posts.html"
+                          title="previous chapter">Posts</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="dp_osciloscopio.html"
+                          title="next chapter">Medición de descargas parciales con un osciloscopio [ES]</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/_posts/svm_formulation.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="dp_osciloscopio.html" title="Medición de descargas parciales con un osciloscopio [ES]"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../posts.html" title="Posts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">JLB  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../posts.html" >Posts</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mathematical Formulation of SVM</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Juan Luis Barberia.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

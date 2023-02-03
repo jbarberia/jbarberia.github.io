@@ -1,0 +1,175 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Introducción &#8212; JLB  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Courses and publications" href="../publications.html" />
+    <link rel="prev" title="Resolución de flujos óptimos de potencia en Python [ES]" href="opf_cvxpy.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../publications.html" title="Courses and publications"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="opf_cvxpy.html" title="Resolución de flujos óptimos de potencia en Python [ES]"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">JLB  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../posts.html" accesskey="U">Posts</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Introducción</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="introduccion">
+<h1>Introducción<a class="headerlink" href="#introduccion" title="Permalink to this heading">¶</a></h1>
+<p>Si bien existen diferentes empresas especializadas en la medición de descargas parciales con sus sofisticados instrumentos. Es posible obtener resultados similares y a un costo inferior si se conoce como funcionan estos equipos.</p>
+<p>En esta entrada del blog se muestra un desarrollo desde cero de un instrumento de medición de descargas parciales.</p>
+</section>
+<section id="definiciones">
+<h1>Definiciones<a class="headerlink" href="#definiciones" title="Permalink to this heading">¶</a></h1>
+<p>Primero unas pequeñas definiciones extraidas de la IEC 60270 “High-voltage test techniques –
+Partial discharge measurements” para saber de que estamos haciendo referencia cuando hablamos de descargas parciales:</p>
+<ul class="simple">
+<li><p><strong>Descarga parcial (PD)</strong>: Descarga electrica localizada que puentea parcialmente la aislacion entre conductores y puede o no ocurrir de forma adyacente a un conductor.</p></li>
+<li><p><strong>Pulso de PD</strong>: Pulso de corriente o tensión que se genera como resultado de la descarga parcial. Este pulso es medido por el cuadripolo de medición.</p></li>
+</ul>
+</section>
+<section id="componentes-necesarios">
+<h1>Componentes necesarios<a class="headerlink" href="#componentes-necesarios" title="Permalink to this heading">¶</a></h1>
+<p>En la imagen siguiente se observan todos los elementos necesarios para la medicion de PD:</p>
+<p align="center">
+  <img src="../assets/images/imagen_equipos_pd.png" />
+</p>
+<p>Los mismos corresponden al siguiente circuito electrico de la norma IEC 60270:</p>
+<p align="center">
+  <img src="../assets/images/diagrama_pd.bmp" />
+</p>
+<p>La función de cada uno es:</p>
+<ul class="simple">
+<li><p><strong>U~</strong>: Es una fuente de tensión que según el caso puede ser resonante o no. Debe proveer una tensión superior al voltage de incepción de la muestra a ensayar.</p></li>
+<li><p><strong>Z</strong>: Este filtro consiste en un inductor de choque y evita que los pulsos de altas fecuenciencias provenientes de la fuente de tensión se propaguen hacia el circuito de medición. Tambien evita que los pulsos de PD se dirijan hacia la fuente de tensión sin pasar por el circuito de medición.</p></li>
+<li><p><strong>Ca</strong>: Es el objeto bajo prueba. Como la frecuencia de los fenomenos de PD son del orden de los kilo-Hertz la aislación se modelara como una capacidad.</p></li>
+<li><p><strong>Ck</strong>: Es el capacitor de acople, permite captar los pulsos de PD ya que esta conectado en paralelo a la muestra. En serie a este se conecta el cuadripolo de medición (coupling device)</p></li>
+<li><p><strong>CD</strong>: Es un filtro pasa banda, con un ancho de: $$100 kHz \le \Delta f \le 400 kHz$$
+y una frecuencia de corte inferior y superior de: $$30 kHz \le f_1 \le 100 kHz$$ y $$f_2 \le 500 kHz$$ respectivamente.</p></li>
+<li><p><strong>MI</strong>: Es un osciloscopio con una tasa de muestreo superior a 100 MS/s. En el mismo se visualizaran los patrones de las PD.</p></li>
+</ul>
+</section>
+<section id="ensayo">
+<h1>Ensayo<a class="headerlink" href="#ensayo" title="Permalink to this heading">¶</a></h1>
+<p>Como primera medida se debe calibrar el sistema de medición. Para esto se coloca el calibrador entre los terminales de la muestra $$C_a$$ y se inyecta un pulso conocido de carga. Sobre el instrumento de medición se podrán observar los picos de esta carga.</p>
+<p>Si colocamos un curso sobre el maximo de los picos tendremos una lectura equivalente del voltage que representa una descarga de carga electrica sobre el conjunto de capacidades $$C_a$$ y $$C_k$$.</p>
+<p align="center">
+  <img src="../assets/images/pd_calibrador.png" width="400" />
+</p>
+<p>Luego se retira el calibrador y se comienza a aplicar tensión alterna. Primero a 2 $$U_0$$ durante 15 segundos para alcanzar la tensión de incepción y luego a $$\sqrt3 U_0$$ durante 60 segundos para sostener la actividad de PD. $$U_0$$ es la tensión de fase del cable que se esta ensayando.</p>
+<p align="center">
+  <img src="../assets/images/phase_resolved_pattern_owon.bmp" width="400" />
+</p>
+<p>Para este caso se sumo la opción de persistencia sobre el display del osciloscopio. De esta manera se obtienen resultados similares a equipos comerciales como el <em>ICM Compact</em> de <em>PowerDiagnostix</em>:</p>
+<p align="center">
+  <img src="../assets/images/phase_resolved_pattern_pd.png" width="400" />
+</p>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Introducción</a></li>
+<li><a class="reference internal" href="#definiciones">Definiciones</a></li>
+<li><a class="reference internal" href="#componentes-necesarios">Componentes necesarios</a></li>
+<li><a class="reference internal" href="#ensayo">Ensayo</a></li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="opf_cvxpy.html"
+                          title="previous chapter">Resolución de flujos óptimos de potencia en Python [ES]</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../publications.html"
+                          title="next chapter">Courses and publications</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/_posts/test.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../publications.html" title="Courses and publications"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="opf_cvxpy.html" title="Resolución de flujos óptimos de potencia en Python [ES]"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">JLB  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../posts.html" >Posts</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Introducción</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Juan Luis Barberia.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

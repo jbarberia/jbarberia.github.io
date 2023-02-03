@@ -1,0 +1,27 @@
+Resolución de flujos óptimos de potencia en Python [ES]
+=======================================================
+
+En este artículo se mostrara como utilizar el uso de la programación orientada a objetos con el módulo cvxpy para resolver el problema de flujo óptimo de potencia (OPF).
+
+Introducción al OPF
+-------------------
+La finalidad del flujo óptimo de potencia consiste en obtener el estado de los generadores, las tensiones en las barras, los intercambios de potencia entre áreas y otras variables de estado relevantes a la red eléctrica; De forma tal de que minimice / maximice algún objetivo.
+
+En este caso se buscara minimizar el costo de generación para un determinado perfil de carga. Dando lugar a la siguiente función objetivo:
+
+.. math::
+
+    \min \sum_{i \in G}{c_i p_i^g}
+
+Donde :math:`c_i` es el costo de generación de la unidad :math:`i` y la cantidad de potencia despachada para esa unidad será :math:`p_i^g`.
+
+Tener solamente esta función objetivo sería tener una visión incompleta del problema ya que se debe tener en cuenta que la potencia generada deberá equiparar a la potencia que se demanda en ese instante de operación de la red. Esto hace a que el problema se convierta en una optimización con restricciones.
+
+Para capturar el balance de potencias en cada barra se utilizara la siguiente expresión:
+
+.. math::
+
+    p_i^g - p_i^d = \sum_{ij \in E_i}{p_ij} \quad \forall i \in n
+
+Aquí :math:`p_i^d` es la cantidad de potencia que se demanda en la barra :math:`i` y :math:`p_ij` representara los flujos de potencia que se intercambian con barras adyacentes a través de líneas de transmisión y transformadores.
+

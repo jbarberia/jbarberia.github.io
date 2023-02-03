@@ -1,0 +1,439 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Resolución de flujos óptimos de potencia en Python [ES] &#8212; JLB  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Medición de descargas parciales con un osciloscopio [ES]" href="dp_osciloscopio.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="dp_osciloscopio.html" title="Medición de descargas parciales con un osciloscopio [ES]"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">JLB  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../posts.html" accesskey="U">Posts</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Resolución de flujos óptimos de potencia en Python [ES]</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="resolucion-de-flujos-optimos-de-potencia-en-python-es">
+<h1>Resolución de flujos óptimos de potencia en Python [ES]<a class="headerlink" href="#resolucion-de-flujos-optimos-de-potencia-en-python-es" title="Permalink to this heading">¶</a></h1>
+<p>En este artículo se mostrara como utilizar el uso de la programación orientada a objetos con el módulo <code class="docutils literal notranslate"><span class="pre">cvxpy</span></code>  para resolver el problema de flujo óptimo de potencia (OPF).</p>
+<section id="introduccion-al-opf">
+<h2>Introducción al OPF<a class="headerlink" href="#introduccion-al-opf" title="Permalink to this heading">¶</a></h2>
+<p>La finalidad del flujo óptimo de potencia consiste en obtener el estado de los generadores, las tensiones en las barras, los intercambios de potencia entre áreas y otras variables de estado relevantes a la red eléctrica; De forma tal de que minimice / maximice algún objetivo.</p>
+<p>En este caso se buscara minimizar el costo de generación para un determinado perfil de carga. Dando lugar a la siguiente función objetivo:</p>
+<div class="math notranslate nohighlight">
+\[
+\min \sum_{i \in G}{c_ip^g_i}
+\]</div>
+<p>Donde <span class="math notranslate nohighlight">\(c_i\)</span> es el costo de generación de la unidad <span class="math notranslate nohighlight">\(i\)</span> y la cantidad de potencia despachada para esa unidad será <span class="math notranslate nohighlight">\(p^g_i\)</span>.</p>
+<p>Tener solamente esta función objetivo sería tener una visión incompleta del problema ya que se debe tener en cuenta que la potencia generada deberá equiparar a la potencia que se demanda en ese instante de operación de la red. Esto hace a que el problema se convierta en una optimización con restricciones.</p>
+<p>Para capturar el balance de potencias en cada barra se utilizara la siguiente expresión:</p>
+<div class="math notranslate nohighlight">
+\[
+p^g_i - p^d_i = \sum_{ij\in E_i}{p_{ij}}, \forall i \in N
+\]</div>
+<p>Aquí <span class="math notranslate nohighlight">\(p_i^d\)</span> es la cantidad de potencia que se demanda en la barra <span class="math notranslate nohighlight">\(i\)</span> y <span class="math notranslate nohighlight">\(p_{ij}\)</span> representara los flujos de potencia que se intercambian con barras adyacentes a través de líneas de transmisión y transformadores.</p>
+<p>Para modelar estos intercambios de potencia entre barras se utilizara un modelo lineal denominado <code class="docutils literal notranslate"><span class="pre">DC-Power</span> <span class="pre">Flow</span></code>. El cual consiste en despreciar las perdidas en los circuitos y asumir que las magnitudes de tensiones entre el emisor y el receptor se mantienen constantes en 1 p.u.</p>
+<p><img alt="" src="../_images/simple_transmission_line.png" /></p>
+<div class="math notranslate nohighlight">
+\[
+p_{ij} = b_{ij}(\theta_i-\theta_j), \forall (i, j) \in E
+\]</div>
+<p>Aquí <span class="math notranslate nohighlight">\(b_{ij}\)</span>  es la susceptancia de la línea de transmisión (inversa de la reactancia) y los valores de <span class="math notranslate nohighlight">\(\theta\)</span> representan los ángulos de las tensiones de las barras donde se halla conectada la línea.</p>
+<p>Si bien con las restricciones vistas uno modela físicamente la dinámica del sistema, es necesario tener en cuenta las restricciones operativas de los elementos involucrados.</p>
+<div class="math notranslate nohighlight">
+\[
+p_i^{g-min}\le p_i^g \le p_i^{g-max}, \forall i \in G
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+-p_{ij}^{max} \le p_{ij} \le p_{ij}^{max}, \forall (i,j) \in E
+\]</div>
+<p>Por ultimo, para tener una referencia angular de tensiones, se tomara una barra de referencia (<em>slack bus</em>):</p>
+<div class="math notranslate nohighlight">
+\[
+\theta_s=0, \forall s \in B_s
+\]</div>
+</section>
+<section id="implementacion-en-python">
+<h2>Implementación en python<a class="headerlink" href="#implementacion-en-python" title="Permalink to this heading">¶</a></h2>
+<section id="sintaxis-y-uso-elemental-de-cvxpy">
+<h3>Sintaxis y uso elemental de cvxpy<a class="headerlink" href="#sintaxis-y-uso-elemental-de-cvxpy" title="Permalink to this heading">¶</a></h3>
+<p>La formulación de un problema de optimización en <code class="docutils literal notranslate"><span class="pre">cvxpy</span></code> se realiza mediante diferentes objetos que representan variables, expresiones y restricciones de un problema de optimización. En el siguiente bloque de código se muestra un ejemplo mínimo de uso de esta herramienta.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cvxpy</span>
+
+<span class="c1"># Variable de optimizacion:</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">()</span>
+
+<span class="c1"># Restricciones</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="mi">4</span><span class="p">]</span>
+
+<span class="c1"># Instancia del problema</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+
+<span class="c1"># Resolucion</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+<span class="c1"># Imprimir resultado</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;El valor de x es </span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="representacion-de-los-componentes-de-una-red-electrica">
+<h3>Representación de los componentes de una red eléctrica<a class="headerlink" href="#representacion-de-los-componentes-de-una-red-electrica" title="Permalink to this heading">¶</a></h3>
+<p>Viendo que se puede manipular expresiones a través de generarlas y guardarlas en listas, mientras que las variables del modelo quedan ligadas entre sí en la instanciación del problema; Se crearan los objetos <code class="docutils literal notranslate"><span class="pre">Bus</span></code> , <code class="docutils literal notranslate"><span class="pre">Generator</span></code> y <code class="docutils literal notranslate"><span class="pre">Line</span></code> de manera de tener una representación modular del sistema eléctrico de potencia. Donde el método <code class="docutils literal notranslate"><span class="pre">constraints</span></code> devuelva una lista de restricciones propia de cada elemento.</p>
+<p>En resumen a la sección anterior tendremos las siguientes componentes que modelar en un sistema de potencia:</p>
+<ul class="simple">
+<li><p>Barras</p>
+<ul>
+<li><p>Ángulo de tensión (variable de optimización)</p></li>
+<li><p>Balance de potencia (restricción)</p></li>
+<li><p>Potencia demandada (parámetro)</p></li>
+</ul>
+</li>
+<li><p>Generadores:</p>
+<ul>
+<li><p>Potencia activa generada (variable de optimización)</p></li>
+<li><p>Límites del generador (restricción)</p></li>
+</ul>
+</li>
+<li><p>Líneas:</p>
+<ul>
+<li><p>Flujo de potencia (restricción)</p></li>
+<li><p>Limite térmico de operación (restricción)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="objeto-para-la-representacion-de-barras">
+<h3>Objeto para la representación de Barras<a class="headerlink" href="#objeto-para-la-representacion-de-barras" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Bus</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A generic bus in power system&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">power_injections</span> <span class="o">=</span> <span class="p">[]</span>
+        
+    <span class="k">def</span> <span class="nf">constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">power_injections</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+
+  
+<span class="k">class</span> <span class="nc">SlackBus</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A reference bus with fixed angle&quot;&quot;&quot;</span>    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">power_injections</span> <span class="o">=</span> <span class="p">[]</span>
+        
+    <span class="k">def</span> <span class="nf">constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">power_injections</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">Demand</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Fixed demand&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bus</span><span class="p">,</span> <span class="n">demand</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bus</span> <span class="o">=</span> <span class="n">bus</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">demand</span> <span class="o">=</span> <span class="n">demand</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bus</span><span class="o">.</span><span class="n">power_injections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">demand</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>
+</pre></div>
+</div>
+</section>
+<section id="objeto-para-la-representacion-de-generadores">
+<h3>Objeto para la representación de Generadores<a class="headerlink" href="#objeto-para-la-representacion-de-generadores" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Generator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A simple generator&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bus</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">cost</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bus</span> <span class="o">=</span> <span class="n">bus</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="n">rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="n">cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">power</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">nonneg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bus</span><span class="o">.</span><span class="n">power_injections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">power</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">power</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rate</span><span class="p">]</span>
+    
+    <span class="k">def</span> <span class="nf">generation_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">power</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span>
+</pre></div>
+</div>
+</section>
+<section id="objeto-para-la-representacion-de-lineas">
+<h3>Objeto para la representación de Líneas<a class="headerlink" href="#objeto-para-la-representacion-de-lineas" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Line</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;DC flow model of a power transmission line&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_bus</span><span class="p">,</span> <span class="n">to_bus</span><span class="p">,</span> <span class="n">susceptance</span><span class="p">,</span> <span class="n">rate</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_bus</span> <span class="o">=</span> <span class="n">from_bus</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_bus</span> <span class="o">=</span> <span class="n">to_bus</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">susceptance</span> <span class="o">=</span> <span class="n">susceptance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="n">rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_bus</span><span class="o">.</span><span class="n">power_injections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">power_injection</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_bus</span><span class="o">.</span><span class="n">power_injections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">power_injection</span><span class="p">())</span>
+    
+    <span class="k">def</span> <span class="nf">power_injection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">susceptance</span>
+        <span class="n">theta_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_bus</span><span class="o">.</span><span class="n">angle</span>
+        <span class="n">theta_j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_bus</span><span class="o">.</span><span class="n">angle</span>
+        <span class="k">return</span> <span class="n">b</span> <span class="o">*</span> <span class="p">(</span><span class="n">theta_i</span> <span class="o">-</span> <span class="n">theta_j</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">cp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">power_injection</span><span class="p">())</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rate</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="ejemplo-minimo-de-uso">
+<h2>Ejemplo mínimo de uso:<a class="headerlink" href="#ejemplo-minimo-de-uso" title="Permalink to this heading">¶</a></h2>
+<p>Se tomara como ejemplo un caso pequeño de 3 barras correspondiente a la librería <a class="reference external" href="https://github.com/power-grid-lib/pglib-opf/blob/master/pglib_opf_case3_lmbd.m">PGLIB</a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Datos:</span>
+<span class="n">buses</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">SlackBus</span><span class="p">(),</span>
+    <span class="n">Bus</span><span class="p">(),</span>
+    <span class="n">Bus</span><span class="p">()</span>
+    <span class="p">]</span>
+
+<span class="n">generators</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Generator</span><span class="p">(</span><span class="n">buses</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span>
+    <span class="n">Generator</span><span class="p">(</span><span class="n">buses</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">)</span>
+    <span class="p">]</span>
+
+<span class="n">demands</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Demand</span><span class="p">(</span><span class="n">buses</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">1.10</span><span class="p">),</span>
+    <span class="n">Demand</span><span class="p">(</span><span class="n">buses</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">1.10</span><span class="p">),</span>
+    <span class="n">Demand</span><span class="p">(</span><span class="n">buses</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mf">0.95</span><span class="p">)</span>
+    <span class="p">]</span>
+
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Line</span><span class="p">(</span><span class="n">buses</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">buses</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">1.11</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span>
+    <span class="n">Line</span><span class="p">(</span><span class="n">buses</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">buses</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mf">1.61</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span>
+    <span class="n">Line</span><span class="p">(</span><span class="n">buses</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">buses</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mf">1.33</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="p">]</span>
+</pre></div>
+</div>
+<p>La formulación del problema se creara generando una lista de restricciones y una función objetivo:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generacion de restricciones</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">buses</span> <span class="o">+</span> <span class="n">generators</span> <span class="o">+</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="n">constraints</span> <span class="o">+=</span> <span class="n">obj</span><span class="o">.</span><span class="n">constraints</span><span class="p">()</span>
+
+<span class="c1"># Creacion de instancia del problema</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span>
+    <span class="n">cp</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">gen</span><span class="o">.</span><span class="n">generation_cost</span><span class="p">()</span> <span class="k">for</span> <span class="n">gen</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">)),</span>
+    <span class="n">constraints</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="c1"># Resolucion del problema</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Para presentar los resultados se los imprimió en pantalla de la siguiente manera:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Resultado</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Objetivo:</span><span class="se">\t</span><span class="si">{</span><span class="n">prob</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Generadores:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">gen</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">generators</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generador </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:</span><span class="se">\t</span><span class="si">{</span><span class="n">gen</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MW&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Buses:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bus</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">buses</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="n">Bus</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bus </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:</span><span class="se">\t</span><span class="si">{</span><span class="n">bus</span><span class="o">.</span><span class="n">angle</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="se">\t</span><span class="s2">rad&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;*Bus </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:</span><span class="se">\t</span><span class="si">{</span><span class="n">bus</span><span class="o">.</span><span class="n">angle</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="se">\t</span><span class="s2">rad&quot;</span><span class="p">)</span>
+        
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Líneas:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Línea </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:</span><span class="se">\t</span><span class="si">{</span><span class="n">line</span><span class="o">.</span><span class="n">power_injection</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MW&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Objetivo</span><span class="p">:</span>	<span class="mf">9.26</span>
+
+<span class="n">Generadores</span><span class="p">:</span>
+<span class="n">Generador</span> <span class="mi">0</span><span class="p">:</span>	<span class="mf">144.30</span> <span class="n">MW</span>
+<span class="n">Generador</span> <span class="mi">1</span><span class="p">:</span>	<span class="mf">170.70</span> <span class="n">MW</span>
+
+<span class="n">Buses</span><span class="p">:</span>
+<span class="o">*</span><span class="n">Bus</span> <span class="mi">0</span><span class="p">:</span>	<span class="mf">0.000</span>	<span class="n">rad</span>
+<span class="n">Bus</span> <span class="mi">1</span><span class="p">:</span>	<span class="mf">0.096</span>	<span class="n">rad</span>
+<span class="n">Bus</span> <span class="mi">2</span><span class="p">:</span>	<span class="o">-</span><span class="mf">0.280</span>	<span class="n">rad</span>
+
+<span class="n">Líneas</span><span class="p">:</span>
+<span class="n">Línea</span> <span class="mi">0</span><span class="p">:</span>	<span class="o">-</span><span class="mf">10.70</span> <span class="n">MW</span>
+<span class="n">Línea</span> <span class="mi">1</span><span class="p">:</span>	<span class="mf">45.00</span> <span class="n">MW</span>
+<span class="n">Línea</span> <span class="mi">2</span><span class="p">:</span>	<span class="mf">50.00</span> <span class="n">MW</span>
+</pre></div>
+</div>
+<p>Donde la resolución real de este problema es:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>%    Bus      Voltage          Generation             Load          Lambda($/MVA-hr)
+%     #   Mag(pu) Ang(deg)   P (MW)   Q (MVAr)   P (MW)   Q (MVAr)     P        Q   
+%   ----- ------- --------  --------  --------  --------  --------  -------  -------
+%       0  1.100    0.000*   148.07     54.70    110.00     40.00    37.575     -
+%       1  0.926    7.259    170.01     -8.79    110.00     40.00    30.101     -
+%       2  0.900  -17.267      0.00     -4.84     95.00     50.00    45.537     -
+%                           --------  --------  --------  --------
+%                  Total:    318.07     41.06    315.00    130.00
+</pre></div>
+</div>
+</section>
+<section id="conclusiones">
+<h2>Conclusiones<a class="headerlink" href="#conclusiones" title="Permalink to this heading">¶</a></h2>
+<p>Se puede ver que con un script sencillo y algunas hipótesis simplificativas se puede resolver el problema del flujo óptimo de potencia.</p>
+<p>La diferencia con la resolución real del problema es bastante pequeña en cuanto al despacho de potencia de los generadores.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Bus</p></th>
+<th class="head"><p>P (MW) Obtenido</p></th>
+<th class="head"><p>P (MW) Optimo</p></th>
+<th class="head"><p>Error %</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>144.30</p></td>
+<td><p>148.07</p></td>
+<td><p>-2.54%</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>170.70</p></td>
+<td><p>170.01</p></td>
+<td><p>0.41%</p></td>
+</tr>
+</tbody>
+</table>
+<p>En cambio los ángulos en las barras se obtiene un mayor error.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Bus</p></th>
+<th class="head"><p>Ang (deg) Obtenido</p></th>
+<th class="head"><p>Ang (deg) Optimo</p></th>
+<th class="head"><p>Error %</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>0.000</p></td>
+<td><p>0.000</p></td>
+<td><p>0%</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>5.500</p></td>
+<td><p>7.259</p></td>
+<td><p>-24.23%</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>-16.043</p></td>
+<td><p>-17.267</p></td>
+<td><p>-7.08%</p></td>
+</tr>
+</tbody>
+</table>
+<p>La razon de esta diferencia radica en la precision del modelo matemático usado ya que en la implementación desarrollada se omitieron los flujos de potencia reactiva y las variaciones de la magnitud de la tension sobre cada una de las barras.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Resolución de flujos óptimos de potencia en Python [ES]</a><ul>
+<li><a class="reference internal" href="#introduccion-al-opf">Introducción al OPF</a></li>
+<li><a class="reference internal" href="#implementacion-en-python">Implementación en python</a><ul>
+<li><a class="reference internal" href="#sintaxis-y-uso-elemental-de-cvxpy">Sintaxis y uso elemental de cvxpy</a></li>
+<li><a class="reference internal" href="#representacion-de-los-componentes-de-una-red-electrica">Representación de los componentes de una red eléctrica</a></li>
+<li><a class="reference internal" href="#objeto-para-la-representacion-de-barras">Objeto para la representación de Barras</a></li>
+<li><a class="reference internal" href="#objeto-para-la-representacion-de-generadores">Objeto para la representación de Generadores</a></li>
+<li><a class="reference internal" href="#objeto-para-la-representacion-de-lineas">Objeto para la representación de Líneas</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ejemplo-minimo-de-uso">Ejemplo mínimo de uso:</a></li>
+<li><a class="reference internal" href="#conclusiones">Conclusiones</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="dp_osciloscopio.html"
+                          title="previous chapter">Medición de descargas parciales con un osciloscopio [ES]</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/_posts/opf_cvxpy.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="dp_osciloscopio.html" title="Medición de descargas parciales con un osciloscopio [ES]"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">JLB  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../posts.html" >Posts</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Resolución de flujos óptimos de potencia en Python [ES]</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Juan Luis Barberia.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

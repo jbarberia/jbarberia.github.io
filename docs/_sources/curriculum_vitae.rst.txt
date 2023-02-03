@@ -1,0 +1,6 @@
+Curriculum Vitae
+================
+
+.. only:: builder_html
+
+   See :download:`this example script <_static/jbarberia.pdf>`.

@@ -14,9 +14,6 @@ The HV dielectric test is done according to IEC 62271-203 / IEC 60694. It consis
 
 The frequency of this voltage could be different from the power frequency. This allows us to use resonant test equipments.
 
-The first step is done to check that the 
-
-
 ## Limitations in the test
 ![Resonant system](_images/gis_resonance.jpg)
 

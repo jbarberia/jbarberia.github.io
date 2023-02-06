@@ -1,0 +1,872 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>OSS14 - Machine learning and artificial intelligence applications &#8212; JLB  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mixed integer problem to solve test sequence on a GIS" href="mip_in_gis.html" />
+    <link rel="prev" title="Posts" href="../posts.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="mip_in_gis.html" title="Mixed integer problem to solve test sequence on a GIS"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../posts.html" title="Posts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">JLB  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../posts.html" accesskey="U">Posts</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">OSS14 - Machine learning and artificial intelligence applications</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="oss14-machine-learning-and-artificial-intelligence-applications">
+<h1>OSS14 - Machine learning and artificial intelligence applications<a class="headerlink" href="#oss14-machine-learning-and-artificial-intelligence-applications" title="Permalink to this heading">¶</a></h1>
+<p>This are some notes of the course that I took the summer of 2022/2023. It was a short course but full of information.
+It was interesting to see how the algorithms works from a rigorous mathematical point of view.
+Not like other courses that are a copy-paste from medium plus some sklearn examples.</p>
+<section id="resolution-aproaches-of-problems">
+<h2>Resolution aproaches of problems<a class="headerlink" href="#resolution-aproaches-of-problems" title="Permalink to this heading">¶</a></h2>
+<section id="rule-based">
+<h3>Rule based<a class="headerlink" href="#rule-based" title="Permalink to this heading">¶</a></h3>
+<p>Normally, the term rule-based system is applied to systems involving
+human-crafted or curated rule sets. Rule-based systems constructed using
+automatic rule inference, such as rule-based machine learning, are
+normally excluded from this system type.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    if X is grey and weight(X) &gt; 1000 kg
+        X is an elephant
+    else
+        X is not an elephant
+</pre></div>
+</div>
+<p>Disadvantages:</p>
+<ul class="simple">
+<li><p>Needs an expert</p></li>
+<li><p>Need to translate expert thought to rules - complex, long, most of
+the time not reliable.</p></li>
+</ul>
+</section>
+<section id="hypothesis-testing-approach">
+<h3>Hypothesis testing approach<a class="headerlink" href="#hypothesis-testing-approach" title="Permalink to this heading">¶</a></h3>
+<p>Hypothesis testing is a statistical method used to make inferences about
+a population parameter based on a sample statistic. It involves
+formulating a null hypothesis and an alternative hypothesis, and then
+using sample data to decide which hypothesis is more likely to be true.
+The decision is based on the calculated probability, known as the
+p-value, of obtaining a sample statistic as extreme or more extreme than
+the one observed, assuming the null hypothesis is true. If the p-value
+is less than a pre-determined significance level (e.g. 0.05), the null
+hypothesis is rejected and the alternative hypothesis is accepted.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+    \begin{cases}
+        H_0: X \in \omega_0; &amp; X ~ p(x | \omega_0)\\
+        H_1: X \in \omega_1; &amp; X ~ p(x | \omega_1)
+    \end{cases}
+\end{split}\]</div>
+</section>
+<section id="data-driven-approach">
+<h3>Data driven approach<a class="headerlink" href="#data-driven-approach" title="Permalink to this heading">¶</a></h3>
+<p>A data-driven approach is a method of problem-solving that relies on
+analyzing data to inform decisions and actions. It involves collecting,
+cleaning, and analyzing data to gain insights and make predictions.</p>
+</section>
+</section>
+<section id="bayes-decision-rule">
+<h2>Bayes decision rule<a class="headerlink" href="#bayes-decision-rule" title="Permalink to this heading">¶</a></h2>
+<div class="math notranslate nohighlight">
+\[P(c_j | x) = \frac{p(x | c_j) p(c_j)}{p(x)}\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(P(c_j | x)\)</span> is the posterior probability.</p></li>
+<li><p><span class="math notranslate nohighlight">\(P(x | c_j)\)</span> is the likelihood.</p></li>
+<li><p><span class="math notranslate nohighlight">\(p(c_j)\)</span> is the prior that acts as a weight of the likelihood.</p></li>
+</ul>
+<p>If we have two classes <span class="math notranslate nohighlight">\(\omega_1\)</span> and <span class="math notranslate nohighlight">\(\omega_2\)</span> we say that
+<span class="math notranslate nohighlight">\(x \in \mathcal{X}\)</span> belongs to:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\omega_1\)</span> if <span class="math notranslate nohighlight">\(p(\omega_1 | x) \ge p(\omega_2 | x)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\omega_2\)</span> if <span class="math notranslate nohighlight">\(p(\omega_1 | x) \le p(\omega_2 | x)\)</span></p></li>
+</ul>
+<p>Then, trought the bayes theorem:</p>
+<div class="math notranslate nohighlight">
+\[\frac{p(x|\omega_1)}{p(x|\omega_2)} \ge \frac{p(\omega_2)}{p(\omega_1)} \longrightarrow x \text{ belongs to }\omega_1\]</div>
+<p>We can assume that the likelihood has a normal distribution <span class="math notranslate nohighlight">\(p(x | \omega_i) ~ N(\mu_i, \sigma_i)\)</span> then we need to choose for a higher posterior probability. If the priors are equal trough classes, we can take the <span class="math notranslate nohighlight">\(log\)</span> of the likelihood and compute a decision boundary for that.</p>
+<div class="math notranslate nohighlight">
+\[p(\omega | x) = \frac{1}{\sqrt{(2\pi)^d \det{\Sigma^{-1}}}} \exp{\frac{(x-\mu)' \Sigma^{-1} (x-\mu)}{2}}\]</div>
+<p>we dropped the <span class="math notranslate nohighlight">\(i\)</span> indices for easiness, $<span class="math notranslate nohighlight">\(g(x) = log(p(\omega | x))\)</span>$</p>
+<div class="math notranslate nohighlight">
+\[g(x) = \frac{-d \log{2\pi}}{2} + \frac{\log{\det{\Sigma^{-1}}}}{2} + \frac{(x-\mu)' \Sigma^{-1} (x-\mu)}{2}\]</div>
+<p>expanding the last term:</p>
+<div class="math notranslate nohighlight">
+\[g(x) = \frac{-d \log{2\pi}}{2} + \frac{\log{\det{\Sigma^{-1}}}}{2} + \frac{x'\Sigma^{-1}x}{2} - {\mu'\Sigma^{-1}x} + \frac{\mu'\Sigma^{-1}\mu}{2}\]</div>
+<p>to make a comparison between some <span class="math notranslate nohighlight">\(g_i \forall i = 1 .. j\)</span> we can drop
+the first term, because is constant. Then the decision boundary is a
+quadratic form (QDA). If we assume same
+<span class="math notranslate nohighlight">\(\Sigma^{-1} \forall i = 1 .. j\)</span> we can drop the quadratic term
+and this give us a linear decision boundary (LDA).</p>
+<section id="maximum-likelihood-parameter-estimation">
+<h3>Maximum likelihood parameter estimation<a class="headerlink" href="#maximum-likelihood-parameter-estimation" title="Permalink to this heading">¶</a></h3>
+<p>There are cases where we know the family of the probability density
+function of each class but the parameters are unknown. Via MLE (maximum
+likelihood estimation) we can estimate the parameters using data coming
+from these distributions. Finally with the obtained parameters we can
+deﬁne a decision function via Bayes rule.</p>
+<p>For a Gaussian distribution and a dataset <span class="math notranslate nohighlight">\(\mathcal{X} \in \mathcal{R}^n\)</span> we take the <span class="math notranslate nohighlight">\(\log\)</span>-likelihood:</p>
+<div class="math notranslate nohighlight">
+\[g(x) = \frac{-dn \log{2\pi}}{2} + \frac{n\log{\det{\Sigma^{-1}}}}{2} + \sum_{i=1}^{n}{\frac{(x_i-\mu)' \Sigma^{-1} (x_i-\mu)}{2}}\]</div>
+<p>then applying the derivative respect <span class="math notranslate nohighlight">\(\mu\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial g(x)}{\partial \mu} = \sum_{i=1}^{n}{\Sigma^{-1} (x - \mu)}\]</div>
+<p>and finding the stationary point:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial g(x)}{\partial \mu} = 0 = \sum_{i=1}^{n}{\Sigma^{-1} (x - \mu)}\]</div>
+<div class="math notranslate nohighlight">
+\[\hat{\mu} = \frac{1}{n} \sum_{i=1}^{n}{x}\]</div>
+<p>thus the covariance is estimated as:</p>
+<div class="math notranslate nohighlight">
+\[\hat{\Sigma} = \frac{1}{n} \sum_{i=1}^{n}{(x-\mu)'(x-\mu)}\]</div>
+</section>
+<section id="non-parametric-density-estimation">
+<h3>Non parametric density estimation<a class="headerlink" href="#non-parametric-density-estimation" title="Permalink to this heading">¶</a></h3>
+<p>Sometimes we do not have a functional form to estimate the parameters
+like the previous section. The <strong>Parzen window</strong> for density estimation
+(kernel density estimation) is a non-parametric method to estimate the
+probability density function of a random variable based on kernels as
+weights.</p>
+<div class="math notranslate nohighlight">
+\[\hat{f(x)} = \frac{1}{nh} \sum_{i=1}^{n}{K(\frac{x - x_i}{h})}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\hat{f}\)</span> is the probability density function estimator (PDF). <span class="math notranslate nohighlight">\(h\)</span> is
+the width of the window. <span class="math notranslate nohighlight">\(K\)</span> is a kernel that takes a point to estimate
+(<span class="math notranslate nohighlight">\(x\)</span>) and some samples <span class="math notranslate nohighlight">\(x_i\)</span> for a given observation <span class="math notranslate nohighlight">\(\mathcal{X}\)</span>.</p>
+<section id="kernels">
+<h4>Kernels<a class="headerlink" href="#kernels" title="Permalink to this heading">¶</a></h4>
+<ul class="simple">
+<li><p>Gaussian: <span class="math notranslate nohighlight">\(K(u) = \frac{1}{\sqrt{2\pi}} \exp(\frac{u^2}{2})\)</span></p></li>
+<li><p>Uniform:
+<span class="math notranslate nohighlight">\(K(u) = \frac{1}{2} \begin{cases} 1 &amp; |u| \le 1 \\ 0 &amp; \text{otherwise} \end{cases}\)</span></p></li>
+</ul>
+</section>
+<section id="example">
+<h4>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h4>
+<p>An example can be found in
+<a class="reference external" href="https://en.wikipedia.org/wiki/Kernel_density_estimation#Example">https://en.wikipedia.org/wiki/Kernel_density_estimation#Example</a></p>
+</section>
+<section id="bandwidth-selection">
+<h4>Bandwidth selection<a class="headerlink" href="#bandwidth-selection" title="Permalink to this heading">¶</a></h4>
+<p>The bandwidth of the kernel is a free parameter which exhibits a strong
+influence on the resulting estimate.</p>
+<ul class="simple">
+<li><p>Bigger <span class="math notranslate nohighlight">\(h\)</span> means more smooth</p></li>
+<li><p>Smaller <span class="math notranslate nohighlight">\(h\)</span> means more structure (more nervous response)</p></li>
+</ul>
+<p><img alt="Kernel density estimate (KDE) with different bandwidths of a randomsample of 100 points from a standard normal distribution. Grey: truedensity (standard normal). Red: KDE with h=0.05. Black: KDE withh=0.337. Green: KDE withh=2." src="../_images/220px-Comparison_of_1D_bandwidth_selectors.png" /></p>
+</section>
+</section>
+</section>
+<section id="k-nearest-neighbor">
+<h2>K-Nearest Neighbor<a class="headerlink" href="#k-nearest-neighbor" title="Permalink to this heading">¶</a></h2>
+<p>K nearest neighbor (KNN) is a non-parametric and lazy learning
+algorithm. It is a supervised learning algorithm used for classification
+and regression.</p>
+<p>In the classification setting, the algorithm works by finding the K
+training examples that are closest to a given test example, and then
+classifying the test example based on the majority class among its K
+nearest neighbors. In the regression setting, the algorithm predicts the
+value of a target variable by averaging the values of the K nearest
+neighbors.</p>
+<p>It acts like the bayes decision rule in some sense:</p>
+<div class="math notranslate nohighlight">
+\[p(\omega_i | x) = \frac{p(x | \omega_1) p(\omega_1)}{p(x)} \equiv \frac{K_{\omega_i}}{K}\]</div>
+<p>where <span class="math notranslate nohighlight">\(K_{\omega_i}\)</span> is the count of neighbors that belongs to the class <span class="math notranslate nohighlight">\(\omega_i\)</span></p>
+</section>
+<section id="functional-learning">
+<h2>Functional learning<a class="headerlink" href="#functional-learning" title="Permalink to this heading">¶</a></h2>
+<p>The training model is composed for 3 elements: a generator of data
+i.i.d. (independent and identically distributed), a supervisor to
+generate the label, and a learner <span class="math notranslate nohighlight">\(d(x; \theta) \in \mathcal{D}\)</span>.</p>
+<p><img alt="Functional learning approach" src="../_images/functional_learning.png" /></p>
+<p>The main idea is to obtain the best combinations of parameters <span class="math notranslate nohighlight">\(\theta\)</span>
+to predict as close as possible as the supervisor does.</p>
+<section id="empirical-risk-minimization">
+<h3>Empirical risk minimization<a class="headerlink" href="#empirical-risk-minimization" title="Permalink to this heading">¶</a></h3>
+<p>The optimal parameter selection is achieved with the following optimization problem:</p>
+<div class="math notranslate nohighlight">
+\[\min_{\theta} J_{emp}(d) = \frac{1}{n} \sum_{i \in A_n}{Q(d(x_i; \theta), y_i)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(A_n\)</span> is the training dataset and <span class="math notranslate nohighlight">\(Q\)</span> is a cost function.</p>
+<ul class="simple">
+<li><p>Quadratic cost: <span class="math notranslate nohighlight">\(Q(\hat{y}, y) = (\hat{y} - y)^2\)</span></p></li>
+<li><p>Absolute cost: <span class="math notranslate nohighlight">\(Q(\hat{y}, y) = ||\hat{y} - y||\)</span></p></li>
+<li><p>Cross-entropy:
+<span class="math notranslate nohighlight">\(Q(\hat{y}, y) = -y \log({\hat{y}}) - (1-y) \log({1 - \hat{y}})\)</span></p></li>
+</ul>
+</section>
+<section id="different-errors-in-training">
+<h3>Different errors in training<a class="headerlink" href="#different-errors-in-training" title="Permalink to this heading">¶</a></h3>
+<p><img alt="Errors in training" src="../_images/training_errors.png" /></p>
+<section id="approximation-error">
+<h4>Approximation error<a class="headerlink" href="#approximation-error" title="Permalink to this heading">¶</a></h4>
+<p>It is the difference in performance between the optimal decision rule <span class="math notranslate nohighlight">\(d^*\)</span> and the best in <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[J_{approx} = \inf_{d \in \mathcal{D}}{J(d)} - J(d^*)\]</div>
+<p>Depends of the choice of the class <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>.</p>
+</section>
+<section id="estimation-error">
+<h4>Estimation error<a class="headerlink" href="#estimation-error" title="Permalink to this heading">¶</a></h4>
+<p>It is the difference in performance between the best rule in
+<span class="math notranslate nohighlight">\(\mathcal{D}\)</span> and the one obtained at the end of learning process:</p>
+<div class="math notranslate nohighlight">
+\[J_{estim} = J(d^*_n) - \inf_{d \in \mathcal{D}}{J(d)}\]</div>
+<p>Depends of the data used to train the model class <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>.</p>
+</section>
+<section id="modelling-error">
+<h4>Modelling error<a class="headerlink" href="#modelling-error" title="Permalink to this heading">¶</a></h4>
+<p>The objective of learning method is to minimize the modeling error,
+defined by: <span class="math notranslate nohighlight">\(J_{mod} = J(d^*_n) - J(d^*)\)</span> which is equivalent to:</p>
+<div class="math notranslate nohighlight">
+\[J_{mod} = J_{estim} - J_{approx}\]</div>
+<p>The problem with this is that we need to balance between:</p>
+<ul class="simple">
+<li><p>increasing the number of tests in <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> leads to increase
+<span class="math notranslate nohighlight">\(J_{estim}\)</span></p></li>
+<li><p>increasing the number of tests in <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> leads to decrease
+<span class="math notranslate nohighlight">\(J_{approx}\)</span></p></li>
+</ul>
+</section>
+</section>
+<section id="consistency-of-the-induction-principle">
+<h3>Consistency of the induction principle<a class="headerlink" href="#consistency-of-the-induction-principle" title="Permalink to this heading">¶</a></h3>
+<p>The minimization of empirical risk principle is consistent for the
+chosen risk and a given problem if the learner does its best when the
+sample size tends to infinity.</p>
+<div class="math notranslate nohighlight">
+\[J(d^*_n) \xrightarrow[n \to \infty]{p} \inf_{d \in \mathcal{D}}{J(d)}\]</div>
+<div class="math notranslate nohighlight">
+\[J_emp(d^*_n) \xrightarrow[n \to \infty]{p} \inf_{d \in \mathcal{D}}{J(d)}\]</div>
+<p><img alt="n is the number of samples" src="../_images/induction_principle.png" /></p>
+</section>
+</section>
+<section id="vapnik-chervonenkis-dimension">
+<h2>Vapnik-Chervonenkis dimension<a class="headerlink" href="#vapnik-chervonenkis-dimension" title="Permalink to this heading">¶</a></h2>
+<p>The Vapnik-Chervonenkis dimension (VC dimension) is a measure of the
+capacity of a statistical classification algorithm. Informally, the
+capacity of a classification model is related to how complicated it can
+be.</p>
+<p>The ﬁrst three panels show that the class of lines in the plane can
+shatter three points. The last panel shows that this class cannot
+shatter four points, as no line will put the hollow points on one side
+and the solid points on the other. Hence the VC dimension of the class
+of straight lines in the plane is three. Note that a class of nonlinear
+curves could shatter four points, and hence has VC dimension greater
+than three</p>
+<p><img alt="" src="../_images/VC_dimension.png" /></p>
+<p>The Vapnik-Chervonenkis dimension <span class="math notranslate nohighlight">\(h\)</span> of a given class <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> of
+detectors is defined as the largest number of samples <span class="math notranslate nohighlight">\(x_k\)</span> from the
+representation space <span class="math notranslate nohighlight">\(\mathcal{X}\)</span> which can be split into any two
+subset partition using detectors from <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>.</p>
+<p>In order, for the minimization of empirical risk principle, to be
+consistent for any probability distribution it is sufficient for the
+VC-dimension h of the detector class <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> to be finite.</p>
+</section>
+<section id="structural-risk-minimization">
+<h2>Structural risk minimization<a class="headerlink" href="#structural-risk-minimization" title="Permalink to this heading">¶</a></h2>
+<p>Involves the construction of nested subsets:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{D}_1 \subset ... \subset \mathcal{D}_k \subset \mathcal{D}\]</div>
+<p>Then we find:</p>
+<div class="math notranslate nohighlight">
+\[d^{*}_{n, k} = arg\min_{d \in \mathcal{D}_k}{P_{emp}(d)}\]</div>
+<p>There is a probability larger or equal to <span class="math notranslate nohighlight">\(1 - \eta\)</span> of:</p>
+<div class="math notranslate nohighlight">
+\[P_e(d_n) \le P_{emp}(d_n) + \sqrt{\frac{h (\log{\frac{2n}{h}} + 1) - log{\frac{\eta}{4}}}{n}}\]</div>
+<p>We can consider <span class="math notranslate nohighlight">\(\phi(h, n, \eta) = \sqrt{\frac{h (\log{\frac{2n}{h}} + 1) - log{\frac{\eta}{4}}}{n}}\)</span>
+And from that list of minimum per subsets we choose the best guaranteed error:</p>
+<div class="math notranslate nohighlight">
+\[d^*_{n} = arg\min_{k}{P_{emp}(d^*_{n, k}) + \phi(n, h_k, \eta))}\]</div>
+<p><img alt="Structural risk minimization" src="../_images/structural_risk_minimization.png" /></p>
+</section>
+<section id="regularization">
+<h2>Regularization<a class="headerlink" href="#regularization" title="Permalink to this heading">¶</a></h2>
+<p>Regularization is important in data science because it helps to prevent
+overfitting. Overfitting occurs when a model is too complex and is able
+to fit the noise in the data, rather than just the underlying pattern.
+Regularization adds a penalty term to the model’s loss function, which
+discourages large weights and helps to keep the model from becoming too
+complex. This can improve the model’s ability to generalize to new,
+unseen data. Common types of regularization used in data science include
+L1, L2, and dropout.</p>
+<section id="ivanov-regularization">
+<h3>Ivanov regularization<a class="headerlink" href="#ivanov-regularization" title="Permalink to this heading">¶</a></h3>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    &amp; \min \frac{1}{n}\sum_{k=1}^{n}{Q(\psi(x_k), y_k)}\\
+    &amp; \text{s.to.}\\
+    &amp; ||\psi||^2 \le A
+\end{aligned}\end{split}\]</div>
+</section>
+</section>
+<section id="tikhonov-regularization">
+<h2>Tikhonov regularization<a class="headerlink" href="#tikhonov-regularization" title="Permalink to this heading">¶</a></h2>
+<p>The penalization acts as a smoothing parameter.</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+    \min \frac{1}{n}\sum_{k=1}^{n}{Q(\psi(x_k), y_k)} + \eta ||\psi||_{\mathcal{H}}^2
+\end{aligned}
+\]</div>
+<p>Regularization tries to convert the Ill-posed problem of MRE to a
+well-posed problem:</p>
+<ul class="simple">
+<li><p>it has a solution</p></li>
+<li><p>the solution is unique</p></li>
+<li><p>the solution is a continuous function of the data (a small
+perturbation of the data produces a small perturbation of the
+solution)</p></li>
+</ul>
+<p><img alt="True function in blue, regression with two datasets in red and green.Left: without regularization, Right: withregularization" src="../_images/regularization.png" /></p>
+</section>
+<section id="reproducing-kernel-hilbert-space-rkhs">
+<h2>Reproducing Kernel Hilbert Space - RKHS<a class="headerlink" href="#reproducing-kernel-hilbert-space-rkhs" title="Permalink to this heading">¶</a></h2>
+<p>A RKHS is a Hilbert space of functions that have a specific reproducing
+property. In other words, the inner product between any two functions in
+the space can be computed by evaluating the functions at a single point
+in the input space.</p>
+<p>How can we find a function that minimizes the loss within an infinite dimensional space? All we need is simply equip <span class="math notranslate nohighlight">\(\mathcal{H}\)</span> with an inner product that reproduces the kernel <span class="math notranslate nohighlight">\(K\)</span> for every <span class="math notranslate nohighlight">\(u, v \in \mathcal{X}\)</span>, <span class="math notranslate nohighlight">\(\langle K_u, K_v \rangle = K(u, v)\)</span>.
+With this specialized inner product, comes with the most powerful theorem.</p>
+<p>A <strong>representer theorem</strong> is any of several related results stating that a minimizer <span class="math notranslate nohighlight">\(f^{*}\)</span> of a regularized empirical risk functional defined over a reproducing kernel Hilbert space can be represented as a finit linear combination of kernel products evaluated on the input points in the training set data.</p>
+<p><img alt="Kernel mapping" src="../_images/kernel.png" /></p>
+<p>The conditions of a function to be a Kernel are fullfilled by the mercer theorem.</p>
+<p><em>Mercer theorem:</em> if <span class="math notranslate nohighlight">\(K\)</span> is a continuous positive defined kernel based on an integral operator, which means that:</p>
+<div class="math notranslate nohighlight">
+\[\int \int \phi(x) K(x, x') \phi^*(x') dx dx' \ge 0\]</div>
+<p>for any <span class="math notranslate nohighlight">\(\phi \in \mathcal{L}_2(\mathcal{X})\)</span> it can be decomposed as:</p>
+<div class="math notranslate nohighlight">
+\[K(x, x') = \sum_{i=1}^{\infty}{\lambda_i \psi_i(x) \psi_(x')} = \langle \phi(x), \phi(x') \rangle\]</div>
+<p>where <span class="math notranslate nohighlight">\(\psi_i\)</span> and <span class="math notranslate nohighlight">\(\lambda_i\)</span> are the eigenfunctions (orthogonales) and
+eigenvalues (positives) of the kernel <span class="math notranslate nohighlight">\(K\)</span>, respectively, such that:</p>
+<div class="math notranslate nohighlight">
+\[\int K(x, x') \psi_i(x) dx = \lambda_i \psi_i(x')\]</div>
+<p>A kernel satisfying the mercer theorem can act as a scalar product in
+<span class="math notranslate nohighlight">\(\mathcal{H}\)</span>, since <span class="math notranslate nohighlight">\(\phi\)</span> can be decompose in a vector:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\phi(x) = \begin{bmatrix}
+        \sqrt{\lambda_1} \psi_1(x)\\
+        \sqrt{\lambda_2} \psi_2(x)\\
+        ...\\
+    \end{bmatrix}
+\end{split}\]</div>
+<p>the dot product of the functions is the dot product of the vector:
+$<span class="math notranslate nohighlight">\(\langle \phi(x), \phi(x') \rangle = K(x, x')\)</span>$</p>
+<section id="example-of-kernels">
+<h3>Example of kernels<a class="headerlink" href="#example-of-kernels" title="Permalink to this heading">¶</a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Radial Kernels</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Gaussian</p></td>
+<td><p><span class="math notranslate nohighlight">\(\exp(-\frac{1}{2\sigma_0^2}   | x - x' | ^2)\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>Exponential</p></td>
+<td><p><span class="math notranslate nohighlight">\(\exp(-\frac{1}{2\sigma_0^2}   | x - x' | )\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>Uniform</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{1}{\eta_0^2} \mathbb{1} | x - x' | \le \beta_0)\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Projective Kernels</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Monomial</p></td>
+<td><p><span class="math notranslate nohighlight">\(\langle x, x' \rangle^q\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>Polynomial</p></td>
+<td><p><span class="math notranslate nohighlight">\((1 + \langle x, x' \rangle)^q\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="perceptron">
+<h2>Perceptron<a class="headerlink" href="#perceptron" title="Permalink to this heading">¶</a></h2>
+<p>The perceptron algorithm finds a solution with the minimum training error by the following update rule:</p>
+<div class="math notranslate nohighlight">
+\[(\omega^*, b^*) = arg \min_{w, b}{\sum_{i=1}^{n}{|y_i - d(x_i; \omega, b)|}}\]</div>
+<p>This is not the best way to split linear separable data. There is clever form to do it.</p>
+</section>
+<section id="support-vector-machines">
+<h2>Support vector machines<a class="headerlink" href="#support-vector-machines" title="Permalink to this heading">¶</a></h2>
+<p>The main idea is to linear separate two groups of classes with an hyperplane. This hiperplane give the maximum margin separation among classes.</p>
+<p><img alt="Maximal margin classification gives the bettergeneralization" src="../_images/margin_svm.png" /></p>
+<ul class="simple">
+<li><p>With a <strong>weak margin</strong> we get low generalization</p></li>
+<li><p>With a <strong>large margin</strong> we get good generalization</p></li>
+</ul>
+<section id="vc-dimension-of-svm">
+<h3>VC - dimension of SVM<a class="headerlink" href="#vc-dimension-of-svm" title="Permalink to this heading">¶</a></h3>
+<p>If we consider the hiperplanes of the form:
+$<span class="math notranslate nohighlight">\(\min_{x \in A_n}{|\langle \omega, x \rangle|} = 1\)</span>$</p>
+<p>A function of type <span class="math notranslate nohighlight">\(d(x, \omega) = sign \langle \omega, x \rangle\)</span> defined based on <span class="math notranslate nohighlight">\(A_n\)</span> and satisfying the constraint <span class="math notranslate nohighlight">\(|\omega| \le \alpha\)</span> has a VC-dimension <span class="math notranslate nohighlight">\(h\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[h \le R^2\alpha^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(R\)</span> is the radius of the smallest sphere centered in the origin that contains <span class="math notranslate nohighlight">\(A_n\)</span>. Then larger the margin <span class="math notranslate nohighlight">\(\rho = \frac{2}{|\omega|}\)</span>, leads to a lower <span class="math notranslate nohighlight">\(|\omega|\)</span> and then <span class="math notranslate nohighlight">\(h\)</span> is lower too.</p>
+</section>
+<section id="svm-model">
+<h3>SVM Model<a class="headerlink" href="#svm-model" title="Permalink to this heading">¶</a></h3>
+<p>See derivation <a class="reference internal" href="svm_formulation.html"><span class="doc std std-doc">here</span></a>.</p>
+</section>
+<section id="svm-regression">
+<h3>SVM Regression<a class="headerlink" href="#svm-regression" title="Permalink to this heading">¶</a></h3>
+<p>The idea is to minimize the error outside of a given margin <span class="math notranslate nohighlight">\(\epsilon\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+       &amp; \min \frac{1}{2} |\omega|^2 + C \sum_{i=1}^{n}{\varepsilon_i + \varepsilon^*_i}\\
+       &amp; \text{s. to.}\\
+       &amp; y_i - (\langle \omega, x_i \rangle + b) \ge \epsilon + \varepsilon_i\\
+       &amp; (\langle \omega, x_i \rangle + b) - y_i \ge \epsilon + \varepsilon^*_i\\
+       &amp; \varepsilon_i \ge 0\\
+       &amp; \varepsilon^*_i \ge 0\\
+    \end{aligned}\end{split}\]</div>
+</section>
+<section id="nu-svm">
+<h3><span class="math notranslate nohighlight">\(\nu\)</span> - SVM<a class="headerlink" href="#nu-svm" title="Permalink to this heading">¶</a></h3>
+<p>Is part of the one class classification model. This class of models aims
+to detect data different from the training data.</p>
+<ul class="simple">
+<li><p>Find the best hyperplane that separates data from origin.</p></li>
+<li><p>Maximize the margin.</p></li>
+</ul>
+<p><img alt="The origin-distance maximization aims to make a closed enclosure inthe kernel space" src="../_images/1C-svm.png" /></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+        &amp;\min \frac{1}{2} ||\omega||^2 + \rho + \frac{1}{n\nu}\sum_{i=1}^{n}{\varepsilon_i}\\
+        &amp;\text{s. to.}\\
+        &amp;y_i(\langle \omega, x_i \rangle + b) \ge 1 - \varepsilon_i \quad \forall i = 1..n\\
+        &amp;\varepsilon_i \ge 0 \quad \forall i =1..n\\
+    \end{aligned}\end{split}\]</div>
+</section>
+<section id="link-with-parzen-windows">
+<h3>Link with parzen windows<a class="headerlink" href="#link-with-parzen-windows" title="Permalink to this heading">¶</a></h3>
+<p>If we set <span class="math notranslate nohighlight">\(\nu=1\)</span>, every point is a support vector. And if the kernel
+function used is normalized, we get the same formula than the Parzen
+windows probability density function.</p>
+<div class="math notranslate nohighlight">
+\[\hat{f(x)} = \frac{1}{nh} \sum_{i=1}^{n}{K(\frac{x - x_i}{h})}\]</div>
+<p><strong>Conclusion:</strong> we are estimating the PDF of the training set <span class="math notranslate nohighlight">\(A_n\)</span> with
+the most relevant suport vectors (<span class="math notranslate nohighlight">\(\nu\)</span> fraction).</p>
+</section>
+<section id="suport-vector-data-description-svdd">
+<h3>Suport vector data description - SVDD<a class="headerlink" href="#suport-vector-data-description-svdd" title="Permalink to this heading">¶</a></h3>
+<p>Minimum enclosing hyper-sphere containing the data.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+        &amp;\min_{R, a, \varepsilon} \frac{1}{2} R^2 + C \sum_{i=1}^{n}{\varepsilon_i}\\
+        &amp; \text{s. to.}\\
+        &amp; ||x_i - a||^2 \le R^2 + \varepsilon_i \quad \forall i=1 .. n\\
+        &amp; \varepsilon_i \ge 0 \quad \forall i=1 .. n
+\end{aligned}\end{split}\]</div>
+<ul class="simple">
+<li><p>one-class classification, positive examples only</p></li>
+<li><p>can detect novel data</p></li>
+<li><p>soft-margin with slack</p></li>
+<li><p>related to density estimation (level sets)</p></li>
+</ul>
+</section>
+<section id="secuential-minimization-optimization-smo">
+<h3>Secuential minimization optimization (SMO)<a class="headerlink" href="#secuential-minimization-optimization-smo" title="Permalink to this heading">¶</a></h3>
+<p>For the SVM optimization problem:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    &amp;\min_{\omega, b} \frac{1}{2}||\omega||^2 + C \sum_{i=1}^{n}{\varepsilon_i}\\
+    &amp;\text{s. to.}\\
+    &amp;y_i(\langle \omega, x_i \rangle + b) \ge 1 - \varepsilon_i \quad \forall i=1..n\\
+    &amp;\varepsilon_i \ge 0 \quad \forall i=1..n
+\end{aligned}\end{split}\]</div>
+<p>It is more easy to solve it’s dual:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    &amp;\max_{\alpha} W(\alpha) = \sum_{i=1}^{n}{\alpha_i} - \frac{1}{2}\sum{i=1}^{n}\sum_{j=1}^{n}{y_i y_j \alpha_i \alpha_j \langle x_i, x_j \rangle}\\
+    &amp;\text{s. to.}\\
+    &amp;0 \le \alpha_i \le C \quad \forall i=1..n\\
+    &amp;\sum_{i=1}^{n}{\alpha_i y_i} = 0 \quad \forall i=1..n\\
+\end{aligned}\end{split}\]</div>
+<p>There are two components to SMO: an analytic method
+for solving for the two Lagrange multipliers, and a heuristic for
+choosing which multipliers to optimize. The SMO algorithm is as follows:</p>
+<ol class="arabic simple">
+<li><p>Heuristically choose a pair of <span class="math notranslate nohighlight">\(\alpha_i\)</span> and <span class="math notranslate nohighlight">\(\alpha_j\)</span></p></li>
+<li><p>Keeping all other <span class="math notranslate nohighlight">\(\alpha\)</span>’s fixed, optimize <span class="math notranslate nohighlight">\(W(\alpha)\)</span> with
+respect to <span class="math notranslate nohighlight">\(\alpha_i\)</span> and <span class="math notranslate nohighlight">\(\alpha_j\)</span></p></li>
+</ol>
+<p>The convergence of SMO is checked by the KKT complementary condition.
+That is why we need to choose at least 2 <span class="math notranslate nohighlight">\(\alpha\)</span>’s to update it is
+value per iteration.</p>
+<p>There are two separate choice heuristics: one for the first Lagrange
+multiplier and one for the second. The choice of the first heuristic
+provides the outer loop of the SMO algorithm. The outer loop first
+iterates over the entire training set, determining whether each example
+violates the KKT conditions. If an example violates the KKT conditions,
+it is then eligible for optimization. After one pass through the entire
+training set, the outer loop iterates over all examples whose Lagrange
+multipliers are neither 0 nor C (the non-bound examples). Again, each
+example is checked against the KKT conditions and violating examples are
+eligible for optimization. The outer loop makes repeated passes over the
+non-bound examples until all of the non-bound examples obey the KKT
+conditions within <span class="math notranslate nohighlight">\(\epsilon\)</span>. The outer loop then goes back and iterates
+over the entire training set. The outer loop keeps alternating between
+single passes over the entire training set and multiple passes over the
+non-bound subset until the entire training set obeys the KKT conditions
+within <span class="math notranslate nohighlight">\(\epsilon\)</span>, whereupon the algorithm terminates.</p>
+</section>
+</section>
+<section id="pca">
+<h2>PCA<a class="headerlink" href="#pca" title="Permalink to this heading">¶</a></h2>
+<p>We search <span class="math notranslate nohighlight">\(u\)</span> such that <span class="math notranslate nohighlight">\(||u|| = 1\)</span> and the projection of <span class="math notranslate nohighlight">\(X\)</span> on the
+axis carried by <span class="math notranslate nohighlight">\(u\)</span> captures the most variance.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    &amp; \max_{u} u' X' X u\\
+    &amp; \text(s. to.)\\
+    &amp; u' u = 1
+\end{aligned}\end{split}\]</div>
+<p>With the dual problem as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+    &amp; \max_{\lambda}{\min_{u}{ - u'X'X u + \lambda(u'u -1)}}
+\end{aligned}\]</div>
+<p>see (here)[https://stats.stackexchange.com/questions/10251/what-is-the-objective-function-of-pca] for more info.</p>
+</section>
+<section id="artificial-neural-networks">
+<h2>Artificial Neural Networks<a class="headerlink" href="#artificial-neural-networks" title="Permalink to this heading">¶</a></h2>
+<section id="transfer-functions">
+<h3>Transfer functions<a class="headerlink" href="#transfer-functions" title="Permalink to this heading">¶</a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Typical activation functions</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ReLU</p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi(x) = \max{0, x}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>Sigmoid</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{1}{1+e^{-x}}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>SoftPlus</p></td>
+<td><p><span class="math notranslate nohighlight">\(\log{1+e^x}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="universal-approximation-theorem">
+<h3>Universal approximation theorem<a class="headerlink" href="#universal-approximation-theorem" title="Permalink to this heading">¶</a></h3>
+<p>A feed forward network with a single hidden layer and a finite number of neurons can approximate continuous functions <span class="math notranslate nohighlight">\(f\)</span> on compact subsets <span class="math notranslate nohighlight">\(I_m\)</span> of <span class="math notranslate nohighlight">\(\mathcal{R}^n\)</span>. The assumptions of the activation function are mild: non-constant, bounded, monotonically increasing, continuous. let <span class="math notranslate nohighlight">\(\phi(x)\)</span> an activation function with the given characteristics. There exists <span class="math notranslate nohighlight">\(N\)</span>, <span class="math notranslate nohighlight">\(v_i\)</span>, <span class="math notranslate nohighlight">\(b_i\)</span>, <span class="math notranslate nohighlight">\(w_i\)</span> <span class="math notranslate nohighlight">\(\in \mathcal{R}^m\)</span> such that:</p>
+<div class="math notranslate nohighlight">
+\[F(x) = \sum_{i=1}^{n}{v_i \phi(w_i' x + b_i)}\]</div>
+<div class="math notranslate nohighlight">
+\[||F(x) - f(x)|| \le \epsilon \quad \forall x \in I_m\]</div>
+</section>
+<section id="chain-rule">
+<h3>Chain Rule<a class="headerlink" href="#chain-rule" title="Permalink to this heading">¶</a></h3>
+<p><img alt="Chain rule" src="../_images/chain_rule.png" /></p>
+<section id="gradient-descent">
+<h4>Gradient descent<a class="headerlink" href="#gradient-descent" title="Permalink to this heading">¶</a></h4>
+<p>Suppose that we have some performance <span class="math notranslate nohighlight">\(P\)</span> as a function of <span class="math notranslate nohighlight">\(o_r\)</span>. The derivative with respect <span class="math notranslate nohighlight">\(w_r\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial P}{\partial w_r} = \frac{\partial P}{\partial o_r} \times \frac{\partial o_r}{\partial w_r}\]</div>
+<p>To get to the left neuron we need to extend the chain rule:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial P}{\partial w_r} = 
+    \frac{\partial P}{\partial o_r} \times
+    \frac{\partial o_r}{\partial p_r} \times
+    \frac{\partial p_r}{\partial o_l} \times
+    \frac{\partial o_l}{\partial p_l} \times
+    \frac{\partial p_l}{\partial w_l}\]</div>
+</section>
+<section id="batch-gradient-descent">
+<h4>Batch gradient descent<a class="headerlink" href="#batch-gradient-descent" title="Permalink to this heading">¶</a></h4>
+<p>Batch gradient descent sums the error for each point in a training set,
+updating the model only after all training examples have been evaluated.
+This process referred to as a training epoch.</p>
+<p>While this batching provides computation efficiency, it can still have a
+long processing time for large training datasets as it still needs to
+store all of the data into memory. Batch gradient descent also usually
+produces a stable error gradient and convergence, but sometimes that
+convergence point isn’t the most ideal, finding the local minimum versus
+the global one.</p>
+</section>
+</section>
+<section id="stochastic-gradient-descent">
+<h3>Stochastic gradient descent<a class="headerlink" href="#stochastic-gradient-descent" title="Permalink to this heading">¶</a></h3>
+<p>Stochastic gradient descent (SGD) runs a training epoch for each example
+within the dataset and it updates each training example’s parameters one
+at a time. Since you only need to hold one training example, they are
+easier to store in memory. While these frequent updates can offer more
+detail and speed, it can result in losses in computational efficiency
+when compared to batch gradient descent. Its frequent updates can result
+in noisy gradients, but this can also be helpful in escaping the local
+minimum and finding the global one.</p>
+</section>
+<section id="mini-batch-gradient-descent">
+<h3>Mini-batch gradient descent<a class="headerlink" href="#mini-batch-gradient-descent" title="Permalink to this heading">¶</a></h3>
+<p>Mini-batch gradient descent combines concepts from both batch gradient
+descent and stochastic gradient descent. It splits the training dataset
+into small batch sizes and performs updates on each of those batches.
+This approach strikes a balance between the computational efficiency of
+batch gradient descent and the speed of stochastic gradient descent.</p>
+</section>
+</section>
+<section id="lagragian-duality">
+<h2>Lagragian Duality<a class="headerlink" href="#lagragian-duality" title="Permalink to this heading">¶</a></h2>
+<p>Given the following problem</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    &amp; \min_{x}{f(x)}\\
+    &amp; \text{s.to.}\\
+    &amp; g_i(x) \le 0 \forall i = 1..n
+\end{aligned}\end{split}\]</div>
+<p>The dual problem is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\max_{\lambda}{w(\lambda)} = \max_{\lambda} \min_{x} L(x, \lambda)\\
+    \lambda \in \mathcal{R}^{m+}\end{split}\]</div>
+</section>
+<section id="karush-kuhn-tucker-conditions">
+<h2>Karush-Kuhn-Tucker conditions<a class="headerlink" href="#karush-kuhn-tucker-conditions" title="Permalink to this heading">¶</a></h2>
+<p>Given the problem:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    &amp; \min_{x}{f(x)}\\
+    &amp; \text{s.to.}\\
+    &amp; g_i(x) \le 0 \forall i = 1..n
+\end{aligned}\end{split}\]</div>
+<p><img alt="The binding constraints has a dual value different fromzero." src="../_images/kkt.png" /></p>
+<p>The KKT conditions are:</p>
+<p><strong>Stationarity:</strong></p>
+<div class="math notranslate nohighlight">
+\[\nabla{f(x^*)} + \sum_{i=1}^{n}{\lambda_i \nabla g_i(x^*)} = 0\]</div>
+<p><strong>Primal feasibility:</strong></p>
+<div class="math notranslate nohighlight">
+\[g_i(x) \le 0 \forall i = 1..n\]</div>
+<p><strong>Dual feasibility:</strong></p>
+<div class="math notranslate nohighlight">
+\[\lambda_i \ge 0 \forall i = 1..n\]</div>
+<p><strong>Complementary slackness:</strong></p>
+<div class="math notranslate nohighlight">
+\[\lambda_i g_i(x^*) = 0\]</div>
+</section>
+<section id="bias-vs-variance">
+<h2>Bias vs Variance<a class="headerlink" href="#bias-vs-variance" title="Permalink to this heading">¶</a></h2>
+<p>In machine learning, bias refers to the error introduced by
+approximating a real-world problem, which may be very complex, by a
+simpler model. High bias can cause an algorithm to miss important
+relationships in the data. Variance, on the other hand, refers to the
+error introduced by the variability of a model’s predictions for a given
+set of training data. High variance can cause an algorithm to fit the
+noise in the data, rather than the underlying pattern. The trade-off
+between bias and variance is known as the bias-variance trade-off.</p>
+</section>
+<section id="curse-of-dimensionality">
+<h2>Curse of dimensionality<a class="headerlink" href="#curse-of-dimensionality" title="Permalink to this heading">¶</a></h2>
+<p>The curse of dimensionality refers to the challenges and difficulties
+that arise when working with high-dimensional data. This can include:</p>
+<ul class="simple">
+<li><p>The exponential increase in the volume of the data space as the
+number of dimensions increases, which makes it harder to find
+patterns and relationships in the data.</p></li>
+<li><p>The need for a exponentially larger amount of data to estimate the
+underlying distribution of the data as the number of dimensions
+increases.</p></li>
+<li><p>The decrease in performance of many machine learning algorithms as
+the number of dimensions increases, due to the algorithms’
+difficulty in handling the increased complexity of the data.</p></li>
+<li><p>The difficulty of visualizing high-dimensional data, as it is hard
+to plot more than a few dimensions at once.</p></li>
+<li><p>The existence of the concentration of measure phenomenon, meaning
+that the mass of the data is concentrated near a lower dimensional
+structure, and a small proportion of it is spread out in the high
+dimensional space, making it hard to find.</p></li>
+<li><p>Therefore, techniques such as dimensionality reduction, feature
+selection, and manifold learning are often used to mitigate the
+curse of dimensionality.</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">OSS14 - Machine learning and artificial intelligence applications</a><ul>
+<li><a class="reference internal" href="#resolution-aproaches-of-problems">Resolution aproaches of problems</a><ul>
+<li><a class="reference internal" href="#rule-based">Rule based</a></li>
+<li><a class="reference internal" href="#hypothesis-testing-approach">Hypothesis testing approach</a></li>
+<li><a class="reference internal" href="#data-driven-approach">Data driven approach</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bayes-decision-rule">Bayes decision rule</a><ul>
+<li><a class="reference internal" href="#maximum-likelihood-parameter-estimation">Maximum likelihood parameter estimation</a></li>
+<li><a class="reference internal" href="#non-parametric-density-estimation">Non parametric density estimation</a><ul>
+<li><a class="reference internal" href="#kernels">Kernels</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#bandwidth-selection">Bandwidth selection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#k-nearest-neighbor">K-Nearest Neighbor</a></li>
+<li><a class="reference internal" href="#functional-learning">Functional learning</a><ul>
+<li><a class="reference internal" href="#empirical-risk-minimization">Empirical risk minimization</a></li>
+<li><a class="reference internal" href="#different-errors-in-training">Different errors in training</a><ul>
+<li><a class="reference internal" href="#approximation-error">Approximation error</a></li>
+<li><a class="reference internal" href="#estimation-error">Estimation error</a></li>
+<li><a class="reference internal" href="#modelling-error">Modelling error</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#consistency-of-the-induction-principle">Consistency of the induction principle</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vapnik-chervonenkis-dimension">Vapnik-Chervonenkis dimension</a></li>
+<li><a class="reference internal" href="#structural-risk-minimization">Structural risk minimization</a></li>
+<li><a class="reference internal" href="#regularization">Regularization</a><ul>
+<li><a class="reference internal" href="#ivanov-regularization">Ivanov regularization</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tikhonov-regularization">Tikhonov regularization</a></li>
+<li><a class="reference internal" href="#reproducing-kernel-hilbert-space-rkhs">Reproducing Kernel Hilbert Space - RKHS</a><ul>
+<li><a class="reference internal" href="#example-of-kernels">Example of kernels</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#perceptron">Perceptron</a></li>
+<li><a class="reference internal" href="#support-vector-machines">Support vector machines</a><ul>
+<li><a class="reference internal" href="#vc-dimension-of-svm">VC - dimension of SVM</a></li>
+<li><a class="reference internal" href="#svm-model">SVM Model</a></li>
+<li><a class="reference internal" href="#svm-regression">SVM Regression</a></li>
+<li><a class="reference internal" href="#nu-svm"><span class="math notranslate nohighlight">\(\nu\)</span> - SVM</a></li>
+<li><a class="reference internal" href="#link-with-parzen-windows">Link with parzen windows</a></li>
+<li><a class="reference internal" href="#suport-vector-data-description-svdd">Suport vector data description - SVDD</a></li>
+<li><a class="reference internal" href="#secuential-minimization-optimization-smo">Secuential minimization optimization (SMO)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pca">PCA</a></li>
+<li><a class="reference internal" href="#artificial-neural-networks">Artificial Neural Networks</a><ul>
+<li><a class="reference internal" href="#transfer-functions">Transfer functions</a></li>
+<li><a class="reference internal" href="#universal-approximation-theorem">Universal approximation theorem</a></li>
+<li><a class="reference internal" href="#chain-rule">Chain Rule</a><ul>
+<li><a class="reference internal" href="#gradient-descent">Gradient descent</a></li>
+<li><a class="reference internal" href="#batch-gradient-descent">Batch gradient descent</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#stochastic-gradient-descent">Stochastic gradient descent</a></li>
+<li><a class="reference internal" href="#mini-batch-gradient-descent">Mini-batch gradient descent</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lagragian-duality">Lagragian Duality</a></li>
+<li><a class="reference internal" href="#karush-kuhn-tucker-conditions">Karush-Kuhn-Tucker conditions</a></li>
+<li><a class="reference internal" href="#bias-vs-variance">Bias vs Variance</a></li>
+<li><a class="reference internal" href="#curse-of-dimensionality">Curse of dimensionality</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../posts.html"
+                          title="previous chapter">Posts</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="mip_in_gis.html"
+                          title="next chapter">Mixed integer problem to solve test sequence on a GIS</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/_posts/utt_ia.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="mip_in_gis.html" title="Mixed integer problem to solve test sequence on a GIS"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../posts.html" title="Posts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">JLB  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../posts.html" >Posts</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">OSS14 - Machine learning and artificial intelligence applications</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Juan Luis Barberia.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

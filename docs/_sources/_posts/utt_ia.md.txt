@@ -4,7 +4,7 @@ author:
 date: January 2023
 ---
 
-# OSS14 - Machine learning and artificial intelligence applications
+# Notes of OSS14 - Machine learning and artificial intelligence applications
 This are some notes of the course that I took the summer of 2022/2023. It was a short course but full of information.
 It was interesting to see how the algorithms works from a rigorous mathematical point of view.
 Not like other courses that are a copy-paste from medium plus some sklearn examples.

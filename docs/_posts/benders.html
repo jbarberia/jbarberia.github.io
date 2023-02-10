@@ -1,0 +1,312 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Benders decomposition &#8212; JLB  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Notes of OSS14 - Machine learning and artificial intelligence applications" href="utt_ia.html" />
+    <link rel="prev" title="Posts" href="../posts.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="utt_ia.html" title="Notes of OSS14 - Machine learning and artificial intelligence applications"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../posts.html" title="Posts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">JLB  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../posts.html" accesskey="U">Posts</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Benders decomposition</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="benders-decomposition">
+<h1>Benders decomposition<a class="headerlink" href="#benders-decomposition" title="Permalink to this heading">¶</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h2>
+<p>Benders decomposition is a mathematical optimization technique used to solve mixed-integer linear programming (MILP) problems. It is a two-phase method that separates the problem into two subproblems: a “master problem” and a “subproblem.”</p>
+<p>The master problem is a linear programming (LP) problem that consists of the continuous variables and a set of optimality conditions (called Benders cuts) that define the feasible region for the integer variables. The subproblem is a feasibility problem for the integer variables and is solved for each iteration of the master problem.</p>
+<p>Benders decomposition can be useful in solving large and complex mixed-integer linear programming problems that cannot be solved by traditional optimization techniques. It is also useful in problems where the feasible region for the integer variables is not well defined and requires multiple iterations to converge to an optimal solution.</p>
+</section>
+<section id="decomposition-method">
+<h2>Decomposition method<a class="headerlink" href="#decomposition-method" title="Permalink to this heading">¶</a></h2>
+<p>For a given problem:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; \min_{x, y} f'x+c'y\\
+&amp; \text{s.t.}\\
+&amp; Ex + Fy \le h\\
+&amp; x \in \mathcal{X}\\
+&amp; y \in \mathcal{Y}
+\end{aligned}
+\end{split}\]</div>
+<p>Can be broken down into two stages</p>
+<div class="math notranslate nohighlight">
+\[
+\min_{x \in \mathcal{X}}\lbrace
+f'\hat{x}+
+\min_{y \in \mathcal{Y}}{
+\lbrace
+c'y : Fy\le h-E\hat{x}
+\rbrace
+}
+\rbrace
+\]</div>
+<p>The inner problem is, generally, solved by it is dual formulation:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; \max_{\lambda} J(\lambda)=\lambda'(h-E\hat{x})\\
+&amp; \text{s.t.}\\
+&amp; \lambda'F \le c\\
+&amp; \lambda \ge 0
+\end{aligned}
+\end{split}\]</div>
+<p>That give us the following cuts:</p>
+<ul class="simple">
+<li><p>For optimal dual subproblem:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\lambda'(h - Ex)\le z\)</span></p></li>
+</ul>
+</li>
+<li><p>For infeasible dual subproblem:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\lambda'(h - Ex)\le 0\)</span></p></li>
+</ul>
+</li>
+</ul>
+<p>This is equivalent (in the LHS) to take the objective value and add the sensitivity of the <span class="math notranslate nohighlight">\(x\)</span> variables.</p>
+<div class="math notranslate nohighlight">
+\[\lambda'(h - Ex) = \mu (x-\hat{x})\]</div>
+<p>with:</p>
+<div class="math notranslate nohighlight">
+\[\mu_i = \frac{\partial J}{\partial x_i}\]</div>
+<p>So, another expresion for the cuts are:</p>
+<ul class="simple">
+<li><p>For optimal dual subproblem:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(J(\lambda^*) + \mu(x - \hat{x})\le z\)</span></p></li>
+</ul>
+</li>
+<li><p>For infeasible dual subproblem:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(J(\lambda^*) + \mu(x - \hat{x})\le 0\)</span></p></li>
+</ul>
+</li>
+</ul>
+<p>One can think of it as a linear aproximation of the inner problem injected into the master:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+&amp; \min f'x + z\\
+&amp; \text{s.t.}\\
+&amp; \lambda'(h-Ex)\le 0 \quad \lambda \in \Lambda_{inf}\\
+&amp; z \ge \lambda'(h - Ex) \quad \lambda \in \Lambda_{opt}\\
+&amp; x \in \mathcal{X}
+\end{aligned}
+\end{split}\]</div>
+<p>where the sets <span class="math notranslate nohighlight">\(\Lambda\)</span> are updated iteration by iteration.</p>
+</section>
+<section id="flowchart">
+<h2>Flowchart<a class="headerlink" href="#flowchart" title="Permalink to this heading">¶</a></h2>
+<p><img alt="" src="../_images/benders.png" /></p>
+</section>
+<section id="code-example">
+<h2>Code example<a class="headerlink" href="#code-example" title="Permalink to this heading">¶</a></h2>
+<p>The following code shows an example. It is similar to the JuMP documentation <a class="reference external" href="https://jump.dev/JuMP.jl/stable/tutorials/algorithms/benders_decomposition/#In-place-iterative-method">example</a>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">GLPK</span><span class="p">,</span><span class="w"> </span><span class="n">JuMP</span><span class="w"></span>
+
+<span class="k">function</span><span class="w"> </span><span class="n">solve_benders</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">:</span><span class="p">])</span><span class="w"></span>
+<span class="w">    </span><span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">F</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">:</span><span class="p">])</span><span class="w"></span>
+<span class="w">    </span><span class="n">optimizer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">optimizer_with_attributes</span><span class="p">(</span><span class="n">GLPK</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">master_model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Model</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@variable</span><span class="p">(</span><span class="n">master_model</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="n">N</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="kt">Int</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@variable</span><span class="p">(</span><span class="n">master_model</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@objective</span><span class="p">(</span><span class="n">master_model</span><span class="p">,</span><span class="w"> </span><span class="n">Min</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="o">&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">subproblem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Model</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@variable</span><span class="p">(</span><span class="n">subproblem</span><span class="p">,</span><span class="w"> </span><span class="n">x_copy</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="n">N</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@variable</span><span class="p">(</span><span class="n">subproblem</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="n">M</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@constraint</span><span class="p">(</span><span class="n">subproblem</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x_copy</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">F</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">.&lt;=</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@objective</span><span class="p">(</span><span class="n">subproblem</span><span class="p">,</span><span class="w"> </span><span class="n">Min</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="o">&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">function</span><span class="w"> </span><span class="n">solve_subproblem</span><span class="p">(</span><span class="n">subproblem</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">fix</span><span class="o">.</span><span class="p">(</span><span class="n">subproblem</span><span class="p">[</span><span class="ss">:x_copy</span><span class="p">],</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"> </span><span class="n">force</span><span class="o">=</span><span class="nb">true</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">optimize!</span><span class="p">(</span><span class="n">subproblem</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kt">Dict</span><span class="p">(</span><span class="w"></span>
+<span class="w">            </span><span class="s">&quot;status&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">termination_status</span><span class="p">(</span><span class="n">subproblem</span><span class="p">),</span><span class="w"></span>
+<span class="w">            </span><span class="s">&quot;objective&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">objective_value</span><span class="p">(</span><span class="n">subproblem</span><span class="p">),</span><span class="w"></span>
+<span class="w">            </span><span class="s">&quot;y&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">value</span><span class="o">.</span><span class="p">(</span><span class="n">subproblem</span><span class="p">[</span><span class="ss">:y</span><span class="p">]),</span><span class="w"></span>
+<span class="w">            </span><span class="s">&quot;μ&quot;</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">reduced_cost</span><span class="o">.</span><span class="p">(</span><span class="n">subproblem</span><span class="p">[</span><span class="ss">:x_copy</span><span class="p">])</span><span class="w"></span>
+<span class="w">        </span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">end</span><span class="w"></span>
+
+<span class="w">    </span><span class="nd">@info</span><span class="w"> </span><span class="s">&quot;iteration</span><span class="se">\t</span><span class="s">lower_bound</span><span class="se">\t</span><span class="s">upper_bound&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">MAX_ITERATIONS</span><span class="w"></span>
+<span class="w">        </span><span class="n">optimize!</span><span class="p">(</span><span class="n">master_model</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">lower_bound</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">objective_value</span><span class="p">(</span><span class="n">master_model</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">x_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">subproblem_info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve_subproblem</span><span class="p">(</span><span class="n">subproblem</span><span class="p">,</span><span class="w"> </span><span class="n">x_k</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">upper_bound</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lower_bound</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">subproblem_info</span><span class="p">[</span><span class="s">&quot;objective&quot;</span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="nd">@info</span><span class="w"> </span><span class="s">&quot;</span><span class="si">$k</span><span class="se">\t</span><span class="si">$lower_bound</span><span class="se">\t</span><span class="si">$upper_bound</span><span class="s">&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">(</span><span class="n">upper_bound</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lower_bound</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">upper_bound</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">GAP</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">break</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">subproblem_info</span><span class="p">[</span><span class="s">&quot;status&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">MOI</span><span class="o">.</span><span class="n">INFEASIBLE</span><span class="w"></span>
+<span class="w">            </span><span class="n">cut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@constraint</span><span class="p">(</span><span class="n">master_model</span><span class="p">,</span><span class="w"> </span><span class="n">subproblem_info</span><span class="p">[</span><span class="s">&quot;objective&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">subproblem_info</span><span class="p">[</span><span class="s">&quot;μ&quot;</span><span class="p">]</span><span class="o">&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x_k</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="nd">@info</span><span class="w"> </span><span class="s">&quot;Adding cut: </span><span class="si">$cut</span><span class="s">&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="k">else</span><span class="w"></span>
+<span class="w">            </span><span class="n">cut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@constraint</span><span class="p">(</span><span class="n">master_model</span><span class="p">,</span><span class="w"> </span><span class="n">subproblem_info</span><span class="p">[</span><span class="s">&quot;objective&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">subproblem_info</span><span class="p">[</span><span class="s">&quot;μ&quot;</span><span class="p">]</span><span class="o">&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x_k</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="nd">@info</span><span class="w"> </span><span class="s">&quot;Adding cut: </span><span class="si">$cut</span><span class="s">&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="k">end</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">objective_value</span><span class="p">(</span><span class="n">master_model</span><span class="p">)</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
+</pre></div>
+</div>
+<p>If we try a simple model:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">E</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="w"></span>
+<span class="n">F</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"></span>
+<span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="w"></span>
+<span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">]</span><span class="w"></span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span><span class="w"></span>
+
+<span class="n">solve_benders</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>That gives the following output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[ Info: iteration       lower_bound     upper_bound
+[ Info: 1       0.0     7.6
+[ Info: Adding cut: -2 x[1] - 8 x[2] - z ≤ -7.6
+[ Info: 2       4.0     13.0
+[ Info: Adding cut: 1.5 x[1] - 4.5 x[2] - z ≤ -3.0
+[ Info: 3       4.0     4.0
+</pre></div>
+</div>
+<p>In which we can see the convergence to the optimal value of 4.</p>
+</section>
+<section id="references">
+<h2><strong>References</strong><a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@article</span><span class="p">{</span><span class="n">geoffrion1972generalized</span><span class="p">,</span>
+  <span class="n">title</span><span class="o">=</span><span class="p">{</span><span class="n">Generalized</span> <span class="n">benders</span> <span class="n">decomposition</span><span class="p">},</span>
+  <span class="n">author</span><span class="o">=</span><span class="p">{</span><span class="n">Geoffrion</span><span class="p">,</span> <span class="n">Arthur</span> <span class="n">M</span><span class="p">},</span>
+  <span class="n">journal</span><span class="o">=</span><span class="p">{</span><span class="n">Journal</span> <span class="n">of</span> <span class="n">optimization</span> <span class="n">theory</span> <span class="ow">and</span> <span class="n">applications</span><span class="p">},</span>
+  <span class="n">volume</span><span class="o">=</span><span class="p">{</span><span class="mi">10</span><span class="p">},</span>
+  <span class="n">pages</span><span class="o">=</span><span class="p">{</span><span class="mi">237</span><span class="o">--</span><span class="mi">260</span><span class="p">},</span>
+  <span class="n">year</span><span class="o">=</span><span class="p">{</span><span class="mi">1972</span><span class="p">},</span>
+  <span class="n">publisher</span><span class="o">=</span><span class="p">{</span><span class="n">Springer</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Benders decomposition</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#decomposition-method">Decomposition method</a></li>
+<li><a class="reference internal" href="#flowchart">Flowchart</a></li>
+<li><a class="reference internal" href="#code-example">Code example</a></li>
+<li><a class="reference internal" href="#references"><strong>References</strong></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../posts.html"
+                          title="previous chapter">Posts</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="utt_ia.html"
+                          title="next chapter">Notes of OSS14 - Machine learning and artificial intelligence applications</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/_posts/benders.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="utt_ia.html" title="Notes of OSS14 - Machine learning and artificial intelligence applications"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../posts.html" title="Posts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">JLB  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../posts.html" >Posts</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Benders decomposition</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Juan Luis Barberia.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

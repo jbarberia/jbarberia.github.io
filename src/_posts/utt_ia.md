@@ -83,7 +83,7 @@ We can assume that the likelihood has a normal distribution $p(x | \omega_i) ~ N
 
 $$p(\omega | x) = \frac{1}{\sqrt{(2\pi)^d \det{\Sigma^{-1}}}} \exp{\frac{(x-\mu)' \Sigma^{-1} (x-\mu)}{2}}$$
 
-we dropped the $i$ indices for easiness, $$g(x) = log(p(\omega | x))$$
+we dropped the $i$ indices for easiness, $g(x) = log(p(\omega | x))$
 
 $$g(x) = \frac{-d \log{2\pi}}{2} + \frac{\log{\det{\Sigma^{-1}}}}{2} + \frac{(x-\mu)' \Sigma^{-1} (x-\mu)}{2}$$
 

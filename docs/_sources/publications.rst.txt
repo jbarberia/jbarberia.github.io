@@ -14,6 +14,17 @@ Courses
 Publications
 ------------
 
+* **Application of Signal Classifiers in Auditory Evoked Potentials for the Detection of Pathological Patients**
+
+    The auditory brainstem response (ABR) by evoked potentials is a widespread auditory pathway assessment technique. This is largely applied due to its cost-effectiveness, practicality and ease of use. In contrast, it requires a trained professional to carry out the analysis of the results. This motivates several research efforts to increase the independence of the diagnostician. To this end, the present work shows the ability of three signal classification tools to differentiate ABR studies of normal hearing subjects from those who may have some pathology. As a starting point, the PhysioNet short term auditory evoked potentials databases are used to calculate the features later applied to construct the dataset. The features used are diverse classes of permutation entropy, fractal dimension, the Lyapunov exponent and the zero crossing rate. To ensure more accurate results, a Montecarlo simulation of one thousand trials is employed to train the classifiers and test the results. The goodness of the classification is performed upon the basis of the computation of quality parameters, such as the area under the receiver operating characteristic curve (ROC), the F1 score coefficient and the accuracy. In all the cases the methodology proposed gives high performance results that encourage the line of research of the present work.
+
+    ::
+
+        @article{sbmac2023cpsi
+            title={Application of Signal Classifiers in Auditory Evoked Potentials for the Detection of Pathological Patients},
+            author={M. G. Baldiviezo, J. L. Barbería, C. B. Bontempo, Y. Corsaro, F. Fernandez Biancardi, M. R. Hernando, L. Licata Caruso, A. Paglia, M. R. Rodríguez, W. E. Legnani}
+        }
+
 * **Benchmarking of open-source software for the optimal power flow problem**
 
     In this work, a comparative study was made of the different open-source alternatives that currently exist for the modeling, simulation and optimization of electrical power systems. In this case, the PowerModels, Matpower and PFNET libraries were evaluated, the three developed on different programming languages, on the PGLIB database.

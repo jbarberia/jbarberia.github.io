@@ -23,7 +23,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Mixed integer problem to solve test sequence on a GIS" href="mip_in_gis.html" />
-    <link rel="prev" title="Posts" href="../posts.html" />
+    <link rel="prev" title="Benders decomposition" href="benders.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
@@ -39,7 +39,7 @@
           <a href="mip_in_gis.html" title="Mixed integer problem to solve test sequence on a GIS"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../posts.html" title="Posts"
+          <a href="benders.html" title="Benders decomposition"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">JLB  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../posts.html" accesskey="U">Posts</a> &#187;</li>
@@ -126,7 +126,7 @@ cleaning, and analyzing data to gain insights and make predictions.</p>
 <p>We can assume that the likelihood has a normal distribution <span class="math notranslate nohighlight">\(p(x | \omega_i) ~ N(\mu_i, \sigma_i)\)</span> then we need to choose for a higher posterior probability. If the priors are equal trough classes, we can take the <span class="math notranslate nohighlight">\(log\)</span> of the likelihood and compute a decision boundary for that.</p>
 <div class="math notranslate nohighlight">
 \[p(\omega | x) = \frac{1}{\sqrt{(2\pi)^d \det{\Sigma^{-1}}}} \exp{\frac{(x-\mu)' \Sigma^{-1} (x-\mu)}{2}}\]</div>
-<p>we dropped the <span class="math notranslate nohighlight">\(i\)</span> indices for easiness, $<span class="math notranslate nohighlight">\(g(x) = log(p(\omega | x))\)</span>$</p>
+<p>we dropped the <span class="math notranslate nohighlight">\(i\)</span> indices for easiness, <span class="math notranslate nohighlight">\(g(x) = log(p(\omega | x))\)</span></p>
 <div class="math notranslate nohighlight">
 \[g(x) = \frac{-d \log{2\pi}}{2} + \frac{\log{\det{\Sigma^{-1}}}}{2} + \frac{(x-\mu)' \Sigma^{-1} (x-\mu)}{2}\]</div>
 <p>expanding the last term:</p>
@@ -818,8 +818,8 @@ curse of dimensionality.</p></li>
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="../posts.html"
-                          title="previous chapter">Posts</a></p>
+    <p class="topless"><a href="benders.html"
+                          title="previous chapter">Benders decomposition</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
@@ -857,7 +857,7 @@ curse of dimensionality.</p></li>
           <a href="mip_in_gis.html" title="Mixed integer problem to solve test sequence on a GIS"
              >next</a> |</li>
         <li class="right" >
-          <a href="../posts.html" title="Posts"
+          <a href="benders.html" title="Benders decomposition"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">JLB  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../posts.html" >Posts</a> &#187;</li>
